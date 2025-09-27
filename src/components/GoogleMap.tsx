@@ -24,7 +24,8 @@ interface CustomMarker {
   description: string;
   details: {
     type: string;
-    severity: string;
+    severity?: string;
+    status?: string;
     reportedBy: string;
     timestamp: string;
   };
@@ -39,7 +40,7 @@ declare global {
 
 const GoogleMap: React.FC<GoogleMapProps> = ({
   apiKey,
-  center = "40.749933,-73.98633",
+  center = "50.749933,-73.98633",
   zoom = 13,
   mapId = "DEMO_MAP_ID",
 }) => {
@@ -48,33 +49,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
 const customMarkers: CustomMarker[] = [
     // Original markers
-    {
-      id: "marker1",
-      position: { lat: 2.907339562947603, lng: 101.65639822584465 },
-      color: "#28a745",
-      title: "Empty Land - Site A",
-      description:
-        "Underutilized land with potential for community development",
-      details: {
-        type: "Community Development",
-        severity: "Opportunity",
-        reportedBy: "Community Planning Committee",
-        timestamp: "2025-09-27 10:30:00",
-      },
-    },
-    {
-      id: "marker2",
-      position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
-      color: "#28a745", // Green - Empty Land
-      title: "Empty Land - Site B",
-      description: "Prime location for recreational facilities development",
-      details: {
-        type: "Land Development",
-        severity: "High Priority",
-        reportedBy: "Residents Association",
-        timestamp: "2025-09-27 11:15:00",
-      },
-    },
+   
     {
       id: "marker3",
       position: { lat: 2.914325025735, lng: 101.66068615884222 },
@@ -92,20 +67,20 @@ const customMarkers: CustomMarker[] = [
     {
       id: "marker4",
       position: { lat: 2.922354813841049, lng: 101.65098945282865 },
-      color: "#17a2b8", // Blue - Mall
+      color: "#dc3545", // Orange - Commercial / Mall
       title: "DPULZE Shopping Centre",
-      description: "Major shopping and entertainment destination",
+      description: "DPULZE Shopping Centre is one of Cyberjaya's largest malls, offering a wide range of retail outlets, dining options, cinemas, and entertainment facilities. It serves as a major commercial hub for residents and visitors, attracting high foot traffic and hosting various events throughout the year.",
       details: {
-        type: "Commercial Development",
-        severity: "Established",
+        type: "Commercial",
+        status: "Operational",
         reportedBy: "Business Directory",
-        timestamp: "2025-09-28 09:00:00",
+        timestamp: "2025-09-27 12:00:00",
       },
     },
     {
       id: "marker5",
       position: { lat: 2.9200082218157664, lng: 101.63701446548157 },
-      color: "#17a2b8", // Blue - Mall
+      color: "#dc3545", // Blue - Mall
       title: "Tamarind Square",
       description: "Shopping and dining complex",
       details: {
@@ -232,6 +207,21 @@ const customMarkers: CustomMarker[] = [
         timestamp: "2025-09-28 12:15:00",
       },
     },
+    {
+      id: "marker14",
+      position: { lat: 2.908385739838329, lng: 101.65577599645505 },
+      color: "#dc3545", // Red - Other
+      title: "Cyberview Sdn Bhd",
+      description: "Cyberview Sdn Bhd is a Malaysian government-owned company tasked with developing Cyberjaya into a global technology and innovation hub through land development, infrastructure, smart city initiatives and ecosystem building for sustainability and high-value tech industries.",
+      details: {
+        type: "Tech Hub & Smart City Developer",
+        status: "Established",
+        reportedBy: "Water Authority",
+        timestamp: "2025-09-28 12:15:00",
+      },
+    },
+
+    
   ];
 
   useEffect(() => {
@@ -243,6 +233,7 @@ const customMarkers: CustomMarker[] = [
         <button id="menu-mapSymbol" class="menu-row menu-action">🗺️ Map Symbol</button>
         <button id="menu-sat-terrain" class="menu-row menu-action">⛰️ Terrain</button>
         <button id="menu-business" class="menu-row menu-action">🏢 Business</button>
+        <button id="menu-addANewLocation" class="menu-row menu-action">📍 Propose a New Location</button>
         <button id="menu-settings" class="menu-row menu-action">⚙️ Settings</button>
         <button id="menu-profile" class="menu-row menu-action">👤 Profile</button>
       </div>
@@ -296,6 +287,9 @@ const customMarkers: CustomMarker[] = [
       const menuSettingsBtn = containerRef.current.querySelector(
         "#menu-settings"
       ) as HTMLButtonElement;
+      const menuAddANewLocationBtn = containerRef.current.querySelector(
+        "#menu-addANewLocation"
+      ) as HTMLButtonElement;
       const menuProfileBtn = containerRef.current.querySelector(
         "#menu-profile"
       ) as HTMLButtonElement;
@@ -315,8 +309,10 @@ const customMarkers: CustomMarker[] = [
       const infowindow = new window.google.maps.InfoWindow();
 
       // center marker
-      const [lat, lng] = center.split(",").map(Number);
+      const [lat, lng] = [2.9084848088074504, 101.65696343270952]; // Rekascape
+      centerMarker.setAttribute("position", `${lat},${lng}`);
       centerMarker.position = { lat, lng };
+
 
       map.innerMap.setOptions({
         mapTypeControl: false,
@@ -349,15 +345,24 @@ const customMarkers: CustomMarker[] = [
       }
 
       const showInfo = (marker: any, data: any) => {
+        const severityOrStatusLabel = data.details.severity
+          ? "Severity"
+          : "Status";
+        const severityOrStatusValue = data.details.severity || data.details.status || "N/A";
+
+        const color = data.details.severity
+          ? getSeverityColor(data.details.severity)
+          : "#333"; // default color for status
+
         const content = `
           <div class="marker-tooltip">
             <h3 style="margin: 0 0 10px 0; color: #333;">${data.title}</h3>
             <p style="margin: 0 0 8px 0; color: #666;">${data.description}</p>
             <div class="marker-details">
               <p><strong>Type:</strong> ${data.details.type}</p>
-              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(
-                data.details.severity
-              )}">${data.details.severity}</span></p>
+              <p><strong>${severityOrStatusLabel}:</strong> 
+                <span style="color: ${color}">${severityOrStatusValue}</span>
+              </p>
               <p><strong>Reported By:</strong> ${data.details.reportedBy}</p>
               <p><strong>Timestamp:</strong> ${data.details.timestamp}</p>
             </div>
@@ -378,11 +383,9 @@ const customMarkers: CustomMarker[] = [
                 onmouseover="this.style.backgroundColor='#0056b3'"
                 onmouseout="this.style.backgroundColor='#007bff'"
               >
-                ${
-                  data.title.includes("Empty Land")
-                    ? "➕ Add Suggestion"
-                    : "💬 View Discussion"
-                }
+                ${data.title.includes("Empty Land")
+                  ? "➕ Propose Suggestion"
+                  : "💬 View Discussion"}
               </button>
             </div>
           </div>
@@ -394,6 +397,7 @@ const customMarkers: CustomMarker[] = [
           infowindow.open(map.innerMap, marker);
         }
       };
+
 
       window.navigateToLocation = (locationId: string) => {
         navigate(`/location/${locationId}`);
@@ -587,6 +591,11 @@ const customMarkers: CustomMarker[] = [
       menuProfileBtn?.addEventListener("click", () => {
         alert("Coming Soon!");
       });
+      menuAddANewLocationBtn?.addEventListener("click", () => {
+        alert("Coming Soon!");
+      });
+
+
 
       // Initialize button states
       setMapSymbolButtonState();
