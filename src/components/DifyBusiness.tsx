@@ -13,7 +13,7 @@ const DifyBusiness = () => {
           fontSize: "24px",
           fontWeight: "600"
         }}>
-          🏢 Business Assistant
+          🏢 AI Ask Insights
         </h1>
         <p style={{ 
           margin: 0, 
