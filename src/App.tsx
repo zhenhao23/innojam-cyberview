@@ -78,7 +78,8 @@ function App() {
             <Route path="/suggestion-summary" element={<SuggestionSummary />} />
             <Route path="/location/:locationId" element={<LocationRouter />} />
             <Route path="/dify" element={<Dify />} />
-            <Route path="/business" element={<DifyBusiness />} />
+            <Route path="/ai-insights" element={<DifyBusiness />} />
+            <Route path="/reports" element={<div>Reports Page - Coming Soon!</div>} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </div>
