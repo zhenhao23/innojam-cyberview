@@ -148,7 +148,7 @@ const AddSuggestion: React.FC = () => {
       // Format chat history from ChatContext responses
       const chatHistory = responses
         .map((response) => `${response.query}\n\n🤖\n\n${response.response}`)
-        .join('\n\n');
+        .join("\n\n");
 
       // Call the workflow API
       const workflowResponse = await fetch(

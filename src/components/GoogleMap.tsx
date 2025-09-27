@@ -272,18 +272,40 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       if (!mounted || !containerRef.current) return;
 
       const map = containerRef.current.querySelector("gmp-map") as any;
-      const centerMarker = containerRef.current.querySelector("#center-marker") as any;
-      const searchMarker = containerRef.current.querySelector("#search-marker") as any;
-      const placePicker = containerRef.current.querySelector("gmpx-place-picker") as any;
+      const centerMarker = containerRef.current.querySelector(
+        "#center-marker"
+      ) as any;
+      const searchMarker = containerRef.current.querySelector(
+        "#search-marker"
+      ) as any;
+      const placePicker = containerRef.current.querySelector(
+        "gmpx-place-picker"
+      ) as any;
 
-      const hamburgerBtn = containerRef.current.querySelector("#hamburger-btn") as HTMLButtonElement;
-      const hamburgerMenu = containerRef.current.querySelector("#hamburger-menu") as HTMLDivElement;
-      const menuAddressContainer = containerRef.current.querySelector("#menu-address") as HTMLDivElement;
-      const menuSatelliteBtn = containerRef.current.querySelector("#menu-satellite") as HTMLButtonElement;
-      const menuBusinessBtn = containerRef.current.querySelector("#menu-business") as HTMLButtonElement;
-      const menuSettingsBtn = containerRef.current.querySelector("#menu-settings") as HTMLButtonElement;
-      const menuProfileBtn = containerRef.current.querySelector("#menu-profile") as HTMLButtonElement;
-      const toggleButton = containerRef.current.querySelector("#view-toggle-btn") as HTMLButtonElement;
+      const hamburgerBtn = containerRef.current.querySelector(
+        "#hamburger-btn"
+      ) as HTMLButtonElement;
+      const hamburgerMenu = containerRef.current.querySelector(
+        "#hamburger-menu"
+      ) as HTMLDivElement;
+      const menuAddressContainer = containerRef.current.querySelector(
+        "#menu-address"
+      ) as HTMLDivElement;
+      const menuSatelliteBtn = containerRef.current.querySelector(
+        "#menu-satellite"
+      ) as HTMLButtonElement;
+      const menuBusinessBtn = containerRef.current.querySelector(
+        "#menu-business"
+      ) as HTMLButtonElement;
+      const menuSettingsBtn = containerRef.current.querySelector(
+        "#menu-settings"
+      ) as HTMLButtonElement;
+      const menuProfileBtn = containerRef.current.querySelector(
+        "#menu-profile"
+      ) as HTMLButtonElement;
+      const toggleButton = containerRef.current.querySelector(
+        "#view-toggle-btn"
+      ) as HTMLButtonElement;
 
       if (
         !map ||
@@ -293,7 +315,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         !window.google
       )
         return;
-      }
 
       const infowindow = new window.google.maps.InfoWindow();
 
@@ -336,7 +357,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             <p style="margin: 0 0 8px 0; color: #666;">${data.description}</p>
             <div class="marker-details">
               <p><strong>Type:</strong> ${data.details.type}</p>
-              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(data.details.severity)}">${data.details.severity}</span></p>
+              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(
+                data.details.severity
+              )}">${data.details.severity}</span></p>
               <p><strong>Reported By:</strong> ${data.details.reportedBy}</p>
               <p><strong>Timestamp:</strong> ${data.details.timestamp}</p>
             </div>
@@ -386,7 +409,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             <circle cx="16" cy="16" r="10" fill="${markerData.color}" stroke="white" stroke-width="2"/>
           </svg>
         `;
-        const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+          svg
+        )}`;
 
         const sharedMarker = new window.google.maps.Marker({
           position: markerData.position,
@@ -407,9 +432,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
         const updateMarkerParent = () => {
           try {
-            const svVisible = typeof panorama.getVisible === "function"
-              ? panorama.getVisible()
-              : !!(panorama && (panorama as any).visible);
+            const svVisible =
+              typeof panorama.getVisible === "function"
+                ? panorama.getVisible()
+                : !!(panorama && (panorama as any).visible);
             if (svVisible) {
               sharedMarker.setMap(panorama);
             } else {
@@ -430,12 +456,15 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const menuPlacePicker = document.createElement("gmpx-place-picker");
       menuPlacePicker.setAttribute("placeholder", "Enter an address");
       menuPlacePicker.setAttribute("class", "menu-place-picker");
-      if (menuAddressContainer) menuAddressContainer.appendChild(menuPlacePicker);
+      if (menuAddressContainer)
+        menuAddressContainer.appendChild(menuPlacePicker);
 
       const handlePlaceSelection = (picker: any) => {
         const place = picker.value;
         if (!place || !place.location) {
-          window.alert("No details available for input: '" + (place?.name ?? "") + "'");
+          window.alert(
+            "No details available for input: '" + (place?.name ?? "") + "'"
+          );
           infowindow.close();
           searchMarker.position = null;
           return;
@@ -449,7 +478,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         }
 
         searchMarker.position = place.location;
-        infowindow.setContent(`<strong>${place.displayName}</strong><br><span>${place.formattedAddress || ""}</span>`);
+        infowindow.setContent(
+          `<strong>${place.displayName}</strong><br><span>${
+            place.formattedAddress || ""
+          }</span>`
+        );
         infowindow.open(map.innerMap, searchMarker);
 
         // Close hamburger menu if open
@@ -461,8 +494,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       };
 
       // Listen to both place pickers (the one inside map & the one in menu)
-      menuPlacePicker.addEventListener("gmpx-placechange", () => handlePlaceSelection(menuPlacePicker));
-      placePicker.addEventListener("gmpx-placechange", () => handlePlaceSelection(placePicker));
+      menuPlacePicker.addEventListener("gmpx-placechange", () =>
+        handlePlaceSelection(menuPlacePicker)
+      );
+      placePicker.addEventListener("gmpx-placechange", () =>
+        handlePlaceSelection(placePicker)
+      );
 
       // ---------- HAMBURGER TOGGLE ----------
       const toggleMenu = () => {
@@ -492,10 +529,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const toggleMapView = () => {
         if (!map || !window.google) return;
         if (isHybridView) {
-          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.SATELLITE });
+          map.innerMap.setOptions({
+            mapTypeId: window.google.maps.MapTypeId.SATELLITE,
+          });
           isHybridView = false;
         } else {
-          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.HYBRID });
+          map.innerMap.setOptions({
+            mapTypeId: window.google.maps.MapTypeId.HYBRID,
+          });
           isHybridView = true;
         }
         setViewButtonState();
