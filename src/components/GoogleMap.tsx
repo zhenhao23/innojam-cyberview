@@ -39,12 +39,14 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const navigate = useNavigate();
 
   const customMarkers: CustomMarker[] = [
+    // Original markers
     {
       id: "marker1",
       position: { lat: 2.907339562947603, lng: 101.65639822584465 },
       color: "#28a745", // Green
       title: "Empty Land - Site A",
-      description: "Underutilized land with potential for community development",
+      description:
+        "Underutilized land with potential for community development",
       details: {
         type: "Community Development",
         severity: "Opportunity",
@@ -55,7 +57,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker2",
       position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
-      color: "#17a2b8", // Blue
+      color: "#28a745", // Green - Empty Land
       title: "Empty Land - Site B",
       description: "Prime location for recreational facilities development",
       details: {
@@ -68,7 +70,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker3",
       position: { lat: 2.914325025735, lng: 101.66068615884222 },
-      color: "#dc3545", // Red
+      color: "#28a745", // Green - Empty Land
       title: "Empty Land - Site C",
       description: "Strategic location for mixed-use development project",
       details: {
@@ -76,6 +78,150 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         severity: "Medium Priority",
         reportedBy: "Urban Planning Department",
         timestamp: "2025-09-27 12:00:00",
+      },
+    },
+    // New markers
+    {
+      id: "marker4",
+      position: { lat: 2.922354813841049, lng: 101.65098945282865 },
+      color: "#17a2b8", // Blue - Mall
+      title: "DPULZE Shopping Centre",
+      description: "Major shopping and entertainment destination",
+      details: {
+        type: "Commercial Development",
+        severity: "Established",
+        reportedBy: "Business Directory",
+        timestamp: "2025-09-28 09:00:00",
+      },
+    },
+    {
+      id: "marker5",
+      position: { lat: 2.9200082218157664, lng: 101.63701446548157 },
+      color: "#17a2b8", // Blue - Mall
+      title: "Tamarind Square",
+      description: "Shopping and dining complex",
+      details: {
+        type: "Commercial Development",
+        severity: "Established",
+        reportedBy: "Business Directory",
+        timestamp: "2025-09-28 09:15:00",
+      },
+    },
+    {
+      id: "marker6",
+      position: { lat: 2.9709630006915897, lng: 101.7136466374846 },
+      color: "#17a2b8", // Blue - Mall
+      title: "IOI City Mall",
+      description: "Large-scale shopping mall and entertainment complex",
+      details: {
+        type: "Commercial Development",
+        severity: "Established",
+        reportedBy: "Business Directory",
+        timestamp: "2025-09-28 09:30:00",
+      },
+    },
+    {
+      id: "marker7",
+      position: { lat: 2.9089907224210494, lng: 101.65254974923516 },
+      color: "#28a745", // Green
+      title: "Empty Land - Site D",
+      description: "Available land for potential development",
+      details: {
+        type: "Land Development",
+        severity: "Opportunity",
+        reportedBy: "Land Survey Team",
+        timestamp: "2025-09-28 10:00:00",
+      },
+    },
+    {
+      id: "marker8",
+      position: { lat: 2.9309723998086588, lng: 101.66299624296362 },
+      color: "#28a745", // Green
+      title: "Empty Land - Site E",
+      description: "Vacant plot suitable for community projects",
+      details: {
+        type: "Community Development",
+        severity: "Opportunity",
+        reportedBy: "Land Survey Team",
+        timestamp: "2025-09-28 10:15:00",
+      },
+    },
+    {
+      id: "marker9",
+      position: { lat: 2.943020089574346, lng: 101.65706021754545 },
+      color: "#28a745", // Green
+      title: "Empty Land - Site F",
+      description: "Open space for potential development",
+      details: {
+        type: "Mixed-Use Development",
+        severity: "Opportunity",
+        reportedBy: "Land Survey Team",
+        timestamp: "2025-09-28 10:30:00",
+      },
+    },
+    {
+      id: "marker10",
+      position: { lat: 2.9167117014265336, lng: 101.64592675053386 },
+      color: "#dc3545", // Red - Other
+      title: "Serin Residency",
+      description: "Residential development complex",
+      details: {
+        type: "Residential Development",
+        severity: "Established",
+        reportedBy: "Housing Registry",
+        timestamp: "2025-09-28 11:00:00",
+      },
+    },
+    {
+      id: "marker11",
+      position: { lat: 2.9154064102559816, lng: 101.66957152212409 },
+      color: "#dc3545", // Red - Other
+      title: "Cyberjaya Lakeside",
+      description: "Lakeside residential and recreational area",
+      details: {
+        type: "Recreational Development",
+        severity: "Established",
+        reportedBy: "Tourism Board",
+        timestamp: "2025-09-28 11:15:00",
+      },
+    },
+    {
+      id: "marker12",
+      position: { lat: 2.9716832682313226, lng: 101.66254129849902 },
+      color: "#28a745", // Green
+      title: "Empty Land - Site G",
+      description: "Undeveloped area with development potential",
+      details: {
+        type: "Land Development",
+        severity: "Opportunity",
+        reportedBy: "Land Survey Team",
+        timestamp: "2025-09-28 11:30:00",
+      },
+    },
+    {
+      id: "marker13",
+      position: { lat: 2.896249236627696, lng: 101.68491107671477 },
+      color: "#dc3545", // Red - Other
+      title: "Equestrian Park Putrajaya",
+      description: "Horse riding and equestrian facilities",
+      details: {
+        type: "Recreational Development",
+        severity: "Established",
+        reportedBy: "Parks Department",
+        timestamp: "2025-09-28 12:00:00",
+      },
+    },
+    {
+      id: "marker14",
+      position: { lat: 2.9076157711227033, lng: 101.69450777255373 },
+      color: "#dc3545", // Red - Other
+      title: "Putrajaya Balancing Reservoir",
+      description: "Water management and recreational facility",
+      details: {
+        type: "Infrastructure Development",
+        severity: "Established",
+        reportedBy: "Water Authority",
+        timestamp: "2025-09-28 12:15:00",
       },
     },
   ];
@@ -116,7 +262,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         "gmpx-place-picker"
       ) as any;
 
-      if (!map || !centerMarker || !searchMarker || !placePicker || !window.google)
+      if (
+        !map ||
+        !centerMarker ||
+        !searchMarker ||
+        !placePicker ||
+        !window.google
+      )
         return;
 
       const infowindow = new window.google.maps.InfoWindow();
@@ -209,7 +361,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                 onmouseout="this.style.backgroundColor='#007bff'"
               >
                 ${
-                  data.id === "marker3"
+                  data.title.includes("Empty Land")
                     ? "➕ Add Suggestion"
                     : "💬 View Discussion"
                 }
@@ -260,7 +412,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         });
 
         // Click opens same info window regardless of parent (map / panorama)
-        sharedMarker.addListener("click", () => showInfo(sharedMarker, markerData));
+        sharedMarker.addListener("click", () =>
+          showInfo(sharedMarker, markerData)
+        );
 
         // When panorama visibility changes, move the marker into the panorama or back to the map.
         const updateMarkerParent = () => {

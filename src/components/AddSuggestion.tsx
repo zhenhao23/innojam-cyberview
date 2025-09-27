@@ -30,7 +30,7 @@ interface Message {
 
 const AddSuggestion: React.FC = () => {
   const navigate = useNavigate();
-  const { addResponse } = useChatContext();
+  const { addResponse, responses } = useChatContext();
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -128,19 +128,61 @@ const AddSuggestion: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+  const handleSendMessage = () => {
     sendMessage(inputMessage);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      handleSendMessage();
     }
   };
 
   const handleBack = () => {
     navigate("/");
+  };
+
+  const handleSubmit = async () => {
+    try {
+      // Format chat history from ChatContext responses
+      const chatHistory = responses
+        .map((response) => `${response.query}\n\n🤖\n\n${response.response}`)
+        .join('\n\n');
+
+      // Call the workflow API
+      const workflowResponse = await fetch(
+        "https://7qb3nlxs-80.asse.devtunnels.ms/v1/workflows/run",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer app-tBhxttZmecW8wWcoMbnRfzr6",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            inputs: {
+              chat_history: chatHistory,
+            },
+            response_mode: "streaming",
+            user: "abc-123",
+          }),
+        }
+      );
+
+      if (workflowResponse.ok) {
+        console.log("Workflow submitted successfully");
+        // Navigate to summary page after successful submission
+        navigate("/suggestion-summary");
+      } else {
+        console.error("Failed to submit workflow");
+        // Still navigate to summary page even if workflow fails
+        navigate("/suggestion-summary");
+      }
+    } catch (error) {
+      console.error("Error submitting workflow:", error);
+      // Navigate to summary page even on error
+      navigate("/suggestion-summary");
+    }
   };
 
   return (
@@ -183,7 +225,7 @@ const AddSuggestion: React.FC = () => {
           <Button
             type="primary"
             size="large"
-            onClick={() => navigate("/suggestion-summary")}
+            onClick={handleSubmit}
             style={{ marginTop: "4px" }}
           >
             Submit
@@ -325,7 +367,7 @@ const AddSuggestion: React.FC = () => {
             <Button
               type="primary"
               icon={<SendOutlined />}
-              onClick={handleSubmit}
+              onClick={handleSendMessage}
               disabled={!inputMessage.trim() || isLoading}
               style={{ height: "auto" }}
             />

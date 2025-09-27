@@ -1,8 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GoogleMap from "./components/GoogleMap";
-import LocationDiscussion from "./components/LocationDiscussion";
-import AddSuggestion from "./components/AddSuggestion";
+import LocationRouter from "./components/LocationRouter";
 import SuggestionSummary from "./components/SuggestionSummary";
 import Dify from "./components/Dify";
 import { ChatProvider } from "./contexts/ChatContext";
@@ -72,12 +71,8 @@ function App() {
                 />
               }
             />
-            <Route path="/location/marker3" element={<AddSuggestion />} />
             <Route path="/suggestion-summary" element={<SuggestionSummary />} />
-            <Route
-              path="/location/:locationId"
-              element={<LocationDiscussion />}
-            />
+            <Route path="/location/:locationId" element={<LocationRouter />} />
             <Route path="/dify" element={<Dify />} />
           </Routes>
         </div>
