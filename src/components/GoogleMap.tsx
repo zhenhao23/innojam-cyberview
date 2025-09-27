@@ -47,9 +47,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-const customMarkers: CustomMarker[] = [
+  const customMarkers: CustomMarker[] = [
     // Original markers
-   
+
     {
       id: "marker3",
       position: { lat: 2.914325025735, lng: 101.66068615884222 },
@@ -90,32 +90,7 @@ const customMarkers: CustomMarker[] = [
         timestamp: "2025-09-28 09:15:00",
       },
     },
-    {
-      id: "marker6",
-      position: { lat: 2.9709630006915897, lng: 101.7136466374846 },
-      color: "#17a2b8", // Blue - Mall
-      title: "IOI City Mall",
-      description: "Large-scale shopping mall and entertainment complex",
-      details: {
-        type: "Commercial Development",
-        severity: "Established",
-        reportedBy: "Business Directory",
-        timestamp: "2025-09-28 09:30:00",
-      },
-    },
-    {
-      id: "marker7",
-      position: { lat: 2.9089907224210494, lng: 101.65254974923516 },
-      color: "#28a745", // Green
-      title: "Empty Land - Site D",
-      description: "Available land for potential development",
-      details: {
-        type: "Land Development",
-        severity: "Opportunity",
-        reportedBy: "Land Survey Team",
-        timestamp: "2025-09-28 10:00:00",
-      },
-    },
+
     {
       id: "marker8",
       position: { lat: 2.9309723998086588, lng: 101.66299624296362 },
@@ -145,7 +120,7 @@ const customMarkers: CustomMarker[] = [
     {
       id: "marker10",
       position: { lat: 2.9167117014265336, lng: 101.64592675053386 },
-      color: "#dc3545", // Red - Other
+      color: "#071cffff", // Red - Other
       title: "Serin Residency",
       description: "Residential development complex",
       details: {
@@ -158,7 +133,7 @@ const customMarkers: CustomMarker[] = [
     {
       id: "marker11",
       position: { lat: 2.9154064102559816, lng: 101.66957152212409 },
-      color: "#dc3545", // Red - Other
+      color: "#071cffff", // Red - Other
       title: "Cyberjaya Lakeside",
       description: "Lakeside residential and recreational area",
       details: {
@@ -168,28 +143,16 @@ const customMarkers: CustomMarker[] = [
         timestamp: "2025-09-28 11:15:00",
       },
     },
-    {
-      id: "marker12",
-      position: { lat: 2.9716832682313226, lng: 101.66254129849902 },
-      color: "#28a745", // Green
-      title: "Empty Land - Site G",
-      description: "Undeveloped area with development potential",
-      details: {
-        type: "Land Development",
-        severity: "Opportunity",
-        reportedBy: "Land Survey Team",
-        timestamp: "2025-09-28 11:30:00",
-      },
-    },
+
     {
       id: "marker13",
       position: { lat: 2.896249236627696, lng: 101.68491107671477 },
-      color: "#dc3545", // Red - Other
+      color: "#dc359fff", // Red - Other
       title: "Equestrian Park Putrajaya",
       description: "Horse riding and equestrian facilities",
       details: {
         type: "Recreational Development",
-        severity: "Established",
+        status: "Established",
         reportedBy: "Parks Department",
         timestamp: "2025-09-28 12:00:00",
       },
@@ -197,16 +160,17 @@ const customMarkers: CustomMarker[] = [
     {
       id: "marker14",
       position: { lat: 2.9076157711227033, lng: 101.69450777255373 },
-      color: "#dc3545", // Red - Other
+      color: "#28a745", // Green - Infrastructure / Public
       title: "Putrajaya Balancing Reservoir",
-      description: "Water management and recreational facility",
+      description: "The Putrajaya Balancing Reservoir is a key water management facility designed to regulate water levels and prevent flooding in the surrounding areas. It also provides recreational opportunities for the public, including jogging paths, fishing spots, and scenic views, making it an important community and infrastructure asset.",
       details: {
-        type: "Infrastructure Development",
-        severity: "Established",
+        type: "Infrastructure",
+        status: "Operational",
         reportedBy: "Water Authority",
-        timestamp: "2025-09-28 12:15:00",
+        timestamp: "2025-09-28T12:15:00",
       },
     },
+
     {
       id: "marker14",
       position: { lat: 2.908385739838329, lng: 101.65577599645505 },
@@ -220,8 +184,69 @@ const customMarkers: CustomMarker[] = [
         timestamp: "2025-09-28 12:15:00",
       },
     },
+    {
+      id: "marker15",
+      position: { lat: 2.908460466162358, lng: 101.6551692124211 },
+      color: "#dc3545", // Blue - Commercial / Office
+      title: "MONSTA - Animonsta / Monsta Studios Sdn. Bhd.",
+      description: "Monsta Studios is a renowned animation studio in Cyberjaya, responsible for producing popular animated content. It operates as a creative business hub, employing animation professionals and hosting office facilities, contributing to the local creative industry.",
+      details: {
+        type: "Commercial",
+        status: "Operational",
+        reportedBy: "Business Directory / Google Maps",
+        timestamp: "2025-09-28T13:00:00",
+      },
+    },
+    {
+      id: "marker16",
+      position: { lat: 2.9134561684436506, lng: 101.65484040573018 },
+      color: "#071cffff", // Yellow - Residential
+      title: "Kanvas SOHO",
+      description: "Kanvas SOHO is a modern apartment building in Cyberjaya offering residential units for individuals and families. It features contemporary living spaces with convenient access to nearby amenities, making it a popular choice for urban dwellers.",
+      details: {
+        type: "Residential",
+        status: "Occupied",
+        reportedBy: "Property Directory ",
+        timestamp: "2025-09-28T13:30:00",
+      },
+    },
+    {
+      id: "marker17",
+      position: { lat: 2.9102540602222082, lng: 101.65725381377584 },
+      color: "#17a2b8", // Blue - Commercial / Office
+      title: "Dell Global Business Center Sdn. Bhd.",
+      description: "Dell Global Business Center is a corporate office in Cyberjaya specializing in computer technology and IT services. The facility houses administrative, technical, and support staff, contributing to the local commercial and technology sector.",
+      details: {
+        type: "Commercial",
+        status: "Operational",
+        reportedBy: "Business Directory",
+        timestamp: "2025-09-28T14:00:00",
 
-    
+      },
+    },
+
+    {
+      id: "marker18",
+      position: { lat: 2.909136574494455, lng: 101.66277152236242 },
+      color: "#ffc107", // Yellow - Residential
+      title: "Cyber Heights Villa",
+      description: "Cyber Heights Villa is a residential apartment complex in Cyberjaya, offering comfortable living spaces for individuals and families. The building provides modern amenities and convenient access to nearby services and facilities.",
+      details: {
+        type: "Residential",
+        status: "Occupied",
+        reportedBy: "Property Directory / Google Maps",
+        timestamp: "2025-09-28T14:30:00",
+
+      },
+    }
+
+
+
+
+
+
+
+
   ];
 
   useEffect(() => {
@@ -384,8 +409,8 @@ const customMarkers: CustomMarker[] = [
                 onmouseout="this.style.backgroundColor='#007bff'"
               >
                 ${data.title.includes("Empty Land")
-                  ? "➕ Propose Suggestion"
-                  : "💬 View Discussion"}
+            ? "➕ Propose Suggestion"
+            : "💬 View Discussion"}
               </button>
             </div>
           </div>
@@ -472,8 +497,7 @@ const customMarkers: CustomMarker[] = [
 
         searchMarker.position = place.location;
         infowindow.setContent(
-          `<strong>${place.displayName}</strong><br><span>${
-            place.formattedAddress || ""
+          `<strong>${place.displayName}</strong><br><span>${place.formattedAddress || ""
           }</span>`
         );
         infowindow.open(map.innerMap, searchMarker);
@@ -614,7 +638,7 @@ const customMarkers: CustomMarker[] = [
       }
       try {
         delete (window as any).navigateToLocation;
-      } catch {}
+      } catch { }
       // remove the document listener we added
       document.removeEventListener("pointerdown", (e) => {
         /* no-op removal placeholder - actual handler was created in init and removed by reference in that scope */
