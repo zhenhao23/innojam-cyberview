@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GoogleMap from "./components/GoogleMap";
 import LocationDiscussion from "./components/LocationDiscussion";
 import AddSuggestion from "./components/AddSuggestion";
+import SuggestionSummary from "./components/SuggestionSummary";
 import Dify from "./components/Dify";
+import { ChatProvider } from "./contexts/ChatContext";
 
 function App() {
   // Get API key from environment variables
@@ -55,29 +57,32 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <GoogleMap
-                apiKey={apiKey}
-                center="2.9089783942489014, 101.65710017412017"
-                zoom={18}
-                mapId="DEMO_MAP_ID"
-              />
-            }
-          />
-          <Route path="/location/marker3" element={<AddSuggestion />} />
-          <Route
-            path="/location/:locationId"
-            element={<LocationDiscussion />}
-          />
-          <Route path="/dify" element={<Dify />} />
-        </Routes>
-      </div>
-    </Router>
+    <ChatProvider>
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <GoogleMap
+                  apiKey={apiKey}
+                  center="2.9089783942489014, 101.65710017412017"
+                  zoom={18}
+                  mapId="DEMO_MAP_ID"
+                />
+              }
+            />
+            <Route path="/location/marker3" element={<AddSuggestion />} />
+            <Route path="/suggestion-summary" element={<SuggestionSummary />} />
+            <Route
+              path="/location/:locationId"
+              element={<LocationDiscussion />}
+            />
+            <Route path="/dify" element={<Dify />} />
+          </Routes>
+        </div>
+      </Router>
+    </ChatProvider>
   );
 }
 

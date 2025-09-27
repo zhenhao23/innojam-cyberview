@@ -16,6 +16,7 @@ import {
   RobotOutlined,
   ArrowLeftOutlined,
 } from "@ant-design/icons";
+import { useChatContext } from "../contexts/ChatContext";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -29,6 +30,7 @@ interface Message {
 
 const AddSuggestion: React.FC = () => {
   const navigate = useNavigate();
+  const { addResponse } = useChatContext();
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -88,6 +90,16 @@ const AddSuggestion: React.FC = () => {
           timestamp: new Date(),
         };
         setMessages((prev) => [...prev, assistantMessage]);
+
+        // Save response to context
+        addResponse({
+          id: assistantMessage.id,
+          query: message,
+          response: assistantMessage.content,
+          timestamp: assistantMessage.timestamp,
+          conversationId: data.conversation_id || "",
+          user: "user-" + Date.now(),
+        });
       } else {
         throw new Error("Failed to get response");
       }
@@ -101,6 +113,16 @@ const AddSuggestion: React.FC = () => {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
+
+      // Save error response to context
+      addResponse({
+        id: errorMessage.id,
+        query: message,
+        response: errorMessage.content,
+        timestamp: errorMessage.timestamp,
+        conversationId: "",
+        user: "user-" + Date.now(),
+      });
     } finally {
       setIsLoading(false);
     }
@@ -133,23 +155,40 @@ const AddSuggestion: React.FC = () => {
     >
       {/* Header */}
       <Card style={{ marginBottom: "20px" }}>
-        <Space direction="vertical" size="small" style={{ width: "100%" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "flex-start",
+          }}
+        >
+          <Space direction="vertical" size="small" style={{ flex: 1 }}>
+            <Button
+              type="default"
+              icon={<ArrowLeftOutlined />}
+              onClick={handleBack}
+            >
+              Back to Map
+            </Button>
+
+            <Typography.Title level={2} style={{ margin: 0 }}>
+              Add Suggestion - Site C
+            </Typography.Title>
+
+            <Text type="secondary">
+              Strategic location for mixed-use development project
+            </Text>
+          </Space>
+
           <Button
-            type="default"
-            icon={<ArrowLeftOutlined />}
-            onClick={handleBack}
+            type="primary"
+            size="large"
+            onClick={() => navigate("/suggestion-summary")}
+            style={{ marginTop: "4px" }}
           >
-            Back to Map
+            Submit
           </Button>
-
-          <Typography.Title level={2} style={{ margin: 0 }}>
-            Add Suggestion - Site C
-          </Typography.Title>
-
-          <Text type="secondary">
-            Strategic location for mixed-use development project
-          </Text>
-        </Space>
+        </div>
       </Card>
 
       {/* Chat Messages */}
