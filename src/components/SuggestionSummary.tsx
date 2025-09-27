@@ -22,22 +22,24 @@ interface Suggestion {
 
 const SuggestionSummary: React.FC = () => {
   const navigate = useNavigate();
-  const { responses } = useChatContext();
+  const { workflowResult } = useChatContext();
   const [commentInputs, setCommentInputs] = useState<{ [key: string]: string }>(
     {}
   );
 
-  // Convert chat responses to suggestions format
-  const suggestions: Suggestion[] = responses.map((response, index) => ({
-    id: response.id,
-    title: `Suggestion ${index + 1}: ${response.query.slice(0, 50)}${
-      response.query.length > 50 ? "..." : ""
-    }`,
-    upvotes: 0,
-    isUpvoted: false,
-    description: `Query: ${response.query}\n\nAI Response: ${response.response}`,
-    comments: [],
-  }));
+  // Convert workflow result to suggestions format
+  const suggestions: Suggestion[] = workflowResult
+    ? [
+        {
+          id: "workflow-result",
+          title: workflowResult.title,
+          upvotes: 0,
+          isUpvoted: false,
+          description: workflowResult.description,
+          comments: [],
+        },
+      ]
+    : [];
 
   const [suggestionsState, setSuggestionsState] =
     useState<Suggestion[]>(suggestions);
@@ -146,6 +148,24 @@ const SuggestionSummary: React.FC = () => {
                 {suggestion.description}
               </div>
             )}
+
+            {workflowResult &&
+              suggestion.id === "workflow-result" &&
+              workflowResult.image_link && (
+                <div style={{ margin: "12px 0" }}>
+                  <img
+                    src={workflowResult.image_link}
+                    alt={workflowResult.title}
+                    style={{
+                      width: "100%",
+                      maxWidth: "500px",
+                      height: "auto",
+                      borderRadius: "8px",
+                      border: "1px solid #ddd",
+                    }}
+                  />
+                </div>
+              )}
 
             <div className="comments-section">
               <h4>Comments:</h4>

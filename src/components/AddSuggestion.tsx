@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Card,
@@ -17,6 +17,7 @@ import {
   ArrowLeftOutlined,
 } from "@ant-design/icons";
 import { useChatContext } from "../contexts/ChatContext";
+import { getLocationData } from "../utils/locationData";
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -30,18 +31,25 @@ interface Message {
 
 const AddSuggestion: React.FC = () => {
   const navigate = useNavigate();
-  const { addResponse, responses } = useChatContext();
+  const { locationId } = useParams<{ locationId: string }>();
+  const { addResponse, responses, setWorkflowResult } = useChatContext();
   const [inputMessage, setInputMessage] = useState("");
+
+  // Get location data for this specific location
+  const locationData = locationId ? getLocationData(locationId) : null;
+
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
-      content:
-        "Hello! I'm here to help you submit suggestions for the mixed-use development project at Site C. What ideas do you have for this strategic location?",
+      content: locationData
+        ? `Hello! I'm here to help you submit suggestions for the ${locationData.title}. ${locationData.description}. What ideas do you have for this location?`
+        : "Hello! I'm here to help you submit suggestions for this location. What ideas do you have?",
       role: "assistant",
       timestamp: new Date(),
     },
   ]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sendMessage = async (message: string) => {
     if (!message.trim()) return;
@@ -59,6 +67,22 @@ const AddSuggestion: React.FC = () => {
     setIsLoading(true);
 
     try {
+      // Prepare location context for the prompt
+      let contextualMessage = message;
+      if (locationData) {
+        const locationContext = `Location Context: 
+- Location ID: ${locationData.id}
+- Title: ${locationData.title}
+- Description: ${locationData.description}
+- Coordinates: ${locationData.position.lat}, ${locationData.position.lng}
+- Type: ${locationData.details.type}
+- Priority/Status: ${locationData.details.severity}
+- Reported by: ${locationData.details.reportedBy}
+
+User Message: ${message}`;
+        contextualMessage = locationContext;
+      }
+
       // Call Dify API
       const response = await fetch(
         "https://7qb3nlxs-80.asse.devtunnels.ms/v1/chat-messages",
@@ -70,7 +94,7 @@ const AddSuggestion: React.FC = () => {
           },
           body: JSON.stringify({
             inputs: {},
-            query: message,
+            query: contextualMessage,
             response_mode: "blocking",
             conversation_id: "",
             user: "user-" + Date.now(),
@@ -144,6 +168,7 @@ const AddSuggestion: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     try {
       // Format chat history from ChatContext responses
       const chatHistory = responses
@@ -170,18 +195,58 @@ const AddSuggestion: React.FC = () => {
       );
 
       if (workflowResponse.ok) {
+        // Handle streaming response
+        const reader = workflowResponse.body?.getReader();
+        const decoder = new TextDecoder();
+
+        if (reader) {
+          let done = false;
+          while (!done) {
+            const { value, done: readerDone } = await reader.read();
+            done = readerDone;
+
+            if (value) {
+              const chunk = decoder.decode(value);
+              const lines = chunk.split("\n");
+
+              for (const line of lines) {
+                if (line.startsWith("data: ")) {
+                  try {
+                    const data = JSON.parse(line.slice(6));
+
+                    // Check if this is the workflow_finished event
+                    if (
+                      data.event === "workflow_finished" &&
+                      data.data?.outputs?.result
+                    ) {
+                      const result = data.data.outputs.result;
+                      setWorkflowResult({
+                        title: result.title,
+                        description: result.description,
+                        image_link: result.image_link,
+                      });
+                      console.log("Workflow result stored:", result);
+                    }
+                  } catch (e) {
+                    // Ignore parsing errors for non-JSON lines
+                  }
+                }
+              }
+            }
+          }
+        }
+
         console.log("Workflow submitted successfully");
-        // Navigate to summary page after successful submission
         navigate("/suggestion-summary");
       } else {
         console.error("Failed to submit workflow");
-        // Still navigate to summary page even if workflow fails
         navigate("/suggestion-summary");
       }
     } catch (error) {
       console.error("Error submitting workflow:", error);
-      // Navigate to summary page even on error
       navigate("/suggestion-summary");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -374,6 +439,37 @@ const AddSuggestion: React.FC = () => {
           </Space.Compact>
         </div>
       </Card>
+
+      {/* Loading Overlay */}
+      {isSubmitting && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+            color: "white",
+          }}
+        >
+          <Spin size="large" style={{ marginBottom: "20px" }} />
+          <Typography.Title level={3} style={{ color: "white", margin: 0 }}>
+            Processing Your Suggestions...
+          </Typography.Title>
+          <Typography.Text
+            style={{ color: "rgba(255, 255, 255, 0.8)", marginTop: "10px" }}
+          >
+            Our AI is analyzing your chat and generating comprehensive
+            development suggestions
+          </Typography.Text>
+        </div>
+      )}
     </div>
   );
 };
