@@ -101,7 +101,7 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Build a Public Swimming Pool",
-        upvotes: 19,
+        upvotes: 900,
         isUpvoted: false,
         image: "/pool.png",
         comments: [
@@ -124,8 +124,8 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-2",
         title: "Create a Basketball Court Complex",
-        upvotes: 22,
-        isUpvoted: true,
+        upvotes: 120,
+        isUpvoted: false,
         image: "/basketballcourt.png",
         comments: [
           {
@@ -235,7 +235,7 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Build a Tiger Sugar!",
-        upvotes: 300,
+        upvotes: 1000,
         isUpvoted: false,
         image: "/public/tiger_sugar.jpg",
         comments: [
