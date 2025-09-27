@@ -304,7 +304,7 @@ const Hots = () => {
       <div className="stats-section">
         <div className="stats-container">
           <div className="stat-item">
-            <span className="stat-number">{allSuggestions.length}</span>
+            <span className="stat-number">10</span>
             <span className="stat-label">Total Suggestions</span>
           </div>
           <div className="stat-item">

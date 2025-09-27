@@ -253,6 +253,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         <button id="menu-sat-terrain" class="menu-row menu-action">⛰️ Terrain</button>
         <button id="menu-report" class="menu-row menu-action">📊 Reports</button>
         <button id="menu-ai-insights" class="menu-row menu-action">🏢 AI Ask Insights</button>
+        <button id="menu-hots" class="menu-row menu-action">🔥 Hots</button>
         <button id="menu-addANewLocation" class="menu-row menu-action">📍 Propose a New Location</button>
         <button id="menu-settings" class="menu-row menu-action">⚙️ Settings</button>
         <button id="menu-profile" class="menu-row menu-action">👤 Profile</button>
@@ -294,7 +295,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const hamburgerMenu = containerRef.current.querySelector(
         "#hamburger-menu"
       ) as HTMLDivElement;
-
+      const menuHotsBtn = containerRef.current.querySelector(
+        "#menu-hots"
+      ) as HTMLButtonElement;
       const menuMapSymbolBtn = containerRef.current.querySelector(
         "#menu-mapSymbol"
       ) as HTMLButtonElement;
@@ -609,6 +612,9 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       });
       menuReportBtn?.addEventListener("click", () => {
         navigate("/reports");
+      });
+      menuHotsBtn?.addEventListener("click", () => {
+        navigate("/Hots");
       });
       menuSettingsBtn?.addEventListener("click", () => {
         alert("Coming Soon!");
