@@ -10,9 +10,17 @@ interface ChatResponse {
   user: string;
 }
 
+interface WorkflowResult {
+  title: string;
+  description: string;
+  image_link: string;
+}
+
 interface ChatContextType {
   responses: ChatResponse[];
+  workflowResult: WorkflowResult | null;
   addResponse: (response: ChatResponse) => void;
+  setWorkflowResult: (result: WorkflowResult) => void;
   getResponsesByUser: (user: string) => ChatResponse[];
   clearResponses: () => void;
 }
@@ -25,6 +33,9 @@ interface ChatProviderProps {
 
 export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
   const [responses, setResponses] = useState<ChatResponse[]>([]);
+  const [workflowResult, setWorkflowResult] = useState<WorkflowResult | null>(
+    null
+  );
 
   const addResponse = (response: ChatResponse) => {
     setResponses((prev) => [...prev, response]);
@@ -40,7 +51,9 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({ children }) => {
 
   const value = {
     responses,
+    workflowResult,
     addResponse,
+    setWorkflowResult,
     getResponsesByUser,
     clearResponses,
   };
