@@ -36,59 +36,6 @@ const locationDataMap: { [key: string]: LocationData } = {
     description:
       "This is an underutilized empty plot of land in a prime location within Cyberjaya. The site has great potential for community recreational development and could significantly benefit local residents. Currently, the area remains unused and could be transformed into a valuable community asset.",
     suggestions: [
-      {
-        id: "suggestion-1",
-        title: "Build a Public Swimming Pool",
-        upvotes: 24,
-        isUpvoted: false,
-        image: "/pool.png",
-        comments: [
-          {
-            id: "comment-1-1",
-            author: "SwimEnthusiast",
-            text: "A public pool would be amazing! Great for families and fitness.",
-            timestamp: "2 hours ago",
-            avatar: "🏊‍♀️",
-          },
-          {
-            id: "comment-1-2",
-            author: "FamilyDad",
-            text: "My kids would love this. Currently we have to travel far for swimming.",
-            timestamp: "1 hour ago",
-            avatar: "👨‍👩‍👧‍�",
-          },
-          {
-            id: "comment-1-3",
-            author: "HealthAdvocate",
-            text: "Swimming is excellent exercise for all ages. This would promote community health.",
-            timestamp: "45 minutes ago",
-            avatar: "�",
-          },
-        ],
-      },
-      {
-        id: "suggestion-2",
-        title: "Construct a Basketball Court",
-        upvotes: 18,
-        isUpvoted: true,
-        image: "/basketballcourt.png",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "BasketballFan",
-            text: "We need more sports facilities in this area. Basketball court would be perfect!",
-            timestamp: "3 hours ago",
-            avatar: "🏀",
-          },
-          {
-            id: "comment-2-2",
-            author: "TeenageResident",
-            text: "This would give us youth a great place to hang out and stay active.",
-            timestamp: "2 hours ago",
-            avatar: "�",
-          },
-        ],
-      },
     ],
   },
   marker2: {
@@ -97,54 +44,7 @@ const locationDataMap: { [key: string]: LocationData } = {
     address: "📍 Persiaran Multimedia, Cyberjaya",
     description:
       "Another underutilized piece of land in Cyberjaya that presents excellent opportunities for community development. This spacious area could host various recreational facilities that would serve the growing population in the surrounding residential and commercial areas.",
-    suggestions: [
-      {
-        id: "suggestion-1",
-        title: "Build a Public Swimming Pool",
-        upvotes: 900,
-        isUpvoted: false,
-        image: "/pool.png",
-        comments: [
-          {
-            id: "comment-1-1",
-            author: "AquaticLover",
-            text: "This location would be perfect for a community pool with easy access!",
-            timestamp: "4 hours ago",
-            avatar: "🏊‍♂️",
-          },
-          {
-            id: "comment-1-2",
-            author: "LocalMom",
-            text: "Swimming lessons for kids would be so convenient here.",
-            timestamp: "3 hours ago",
-            avatar: "👩‍�",
-          },
-        ],
-      },
-      {
-        id: "suggestion-2",
-        title: "Create a Basketball Court Complex",
-        upvotes: 120,
-        isUpvoted: false,
-        image: "/basketballcourt.png",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "SportsCoach",
-            text: "A proper basketball facility could host community tournaments!",
-            timestamp: "2 hours ago",
-            avatar: "🏆",
-          },
-          {
-            id: "comment-2-2",
-            author: "CommunityLeader",
-            text: "Sports facilities bring people together and build community spirit.",
-            timestamp: "1 hour ago",
-            avatar: "🤝",
-          },
-        ],
-      },
-    ],
+    suggestions: [],
   },
   marker4: {
     id: "marker4",
