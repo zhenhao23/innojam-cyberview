@@ -557,11 +557,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         if (hamburgerMenu?.classList.contains("open")) toggleMenu();
       });
       menuSettingsBtn?.addEventListener("click", () => {
-        navigate("/settings");
+        alert("Coming Soon!");
         if (hamburgerMenu?.classList.contains("open")) toggleMenu();
       });
       menuProfileBtn?.addEventListener("click", () => {
-        navigate("/profile");
+        alert("Coming Soon!");
         if (hamburgerMenu?.classList.contains("open")) toggleMenu();
       });
     };
