@@ -359,19 +359,18 @@
 }
 
 .trending-badge {
-  position: absolute;
-  top: 50px;
-  right: 20px;
+  display: inline-block;
+  margin-left: 10px;
   background: linear-gradient(135deg, #ff4757, #ff3742);
   color: white;
-  padding: 6px 12px;
+  padding: 4px 8px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
   animation: pulse-trending 2s infinite;
-  z-index: 2;
+  vertical-align: middle;
 }
 
 @keyframes pulse-trending {

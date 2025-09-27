@@ -34,208 +34,543 @@ const Hots = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const locationDataMap: { [key: string]: LocationData } = {
-    marker1: {
-      id: "marker1",
-      name: "Empty Land - Site A",
-      address: "📍 Jalan Cyberjaya 5, Cyberjaya",
-      description: "This is an underutilized empty plot of land in a prime location within Cyberjaya.",
-      suggestions: [
-        {
-          id: "suggestion-1",
-          title: "Build a Public Swimming Pool",
-          upvotes: 24,
-          isUpvoted: false,
-          image: "/pool.png",
-          comments: [
-            {
-              id: "comment-1-1",
-              author: "SwimEnthusiast",
-              text: "A public pool would be amazing! Great for families and fitness.",
-              timestamp: "2 hours ago",
-              avatar: "🏊‍♀️",
-            },
-          ],
-        },
-        {
-          id: "suggestion-2",
-          title: "Construct a Basketball Court",
-          upvotes: 18,
-          isUpvoted: true,
-          image: "/basketballcourt.png",
-          comments: [
-            {
-              id: "comment-2-1",
-              author: "BasketballFan",
-              text: "We need more sports facilities in this area. Basketball court would be perfect!",
-              timestamp: "3 hours ago",
-              avatar: "🏀",
-            },
-          ],
-        },
-      ],
-    },
-    marker2: {
-      id: "marker2",
-      name: "Empty Land - Site B",
-      address: "📍 Persiaran Multimedia, Cyberjaya",
-      description: "Another underutilized piece of land in Cyberjaya that presents excellent opportunities.",
-      suggestions: [
-        {
-          id: "suggestion-1",
-          title: "Build a Public Swimming Pool",
-          upvotes: 900,
-          isUpvoted: false,
-          image: "/pool.png",
-          comments: [
-            {
-              id: "comment-1-1",
-              author: "AquaticLover",
-              text: "This location would be perfect for a community pool with easy access!",
-              timestamp: "4 hours ago",
-              avatar: "🏊‍♂️",
-            },
-          ],
-        },
-        {
-          id: "suggestion-2",
-          title: "Create a Basketball Court Complex",
-          upvotes: 120,
-          isUpvoted: false,
-          image: "/basketballcourt.png",
-          comments: [
-            {
-              id: "comment-2-1",
-              author: "SportsCoach",
-              text: "A proper basketball facility could host community tournaments!",
-              timestamp: "2 hours ago",
-              avatar: "🏆",
-            },
-          ],
-        },
-      ],
-    },
-    marker4: {
-      id: "marker4",
-      name: "DPULZE Shopping Centre",
-      address: "📍 DPULZE, Cyberjaya",
-      description: "DPULZE Shopping Centre is one of Cyberjaya's largest and most vibrant malls.",
-      suggestions: [
-        {
-          id: "suggestion-1",
-          title: "Build a Chagee!",
-          upvotes: 3500,
-          isUpvoted: true,
-          image: "/public/chagee.jpg",
-          comments: [
-            {
-              id: "comment-1-1",
-              author: "Chagee123",
-              text: "Love chagee! Always wanted to have Chagee in Cyberjaya.",
-              timestamp: "2 hours ago",
-              avatar: "🛍️",
-            },
-          ],
-        },
-        {
-          id: "suggestion-2",
-          title: "Build a KOI!",
-          upvotes: 200,
-          isUpvoted: false,
-          image: "/public/koi.jpg",
-          comments: [
-            {
-              id: "comment-2-1",
-              author: "TeaLover",
-              text: "KOI would be a great addition for bubble tea fans like me!",
-              timestamp: "1 hour ago",
-              avatar: "🎨",
-            },
-          ],
-        },
-      ],
-    },
-    marker17: {
-      id: "marker17",
-      name: "Dell Global Business Center Sdn. Bhd.",
-      address: "📍 Cyberjaya",
-      description: "Dell Global Business Center is a corporate office in Cyberjaya specializing in computer technology.",
-      suggestions: [
-        {
-          id: "suggestion-1",
-          title: "Open Tech Workshops for Students",
-          upvotes: 500,
-          isUpvoted: true,
-          image: "/public/tech_workshops.jpg",
-          comments: [
-            {
-              id: "comment-1-1",
-              author: "StudentA",
-              text: "Workshops would be an excellent learning opportunity for tech enthusiasts!",
-              timestamp: "2 hours ago",
-              avatar: "💻",
-            },
-          ],
-        },
-        {
-          id: "suggestion-2",
-          title: "Corporate Open House & Tours",
-          upvotes: 3000,
-          isUpvoted: false,
-          image: "/public/dell_tour.jpg",
-          comments: [
-            {
-              id: "comment-2-1",
-              author: "VisitorA",
-              text: "Visitors can learn about Dell's operations and career paths.",
-              timestamp: "1 hour ago",
-              avatar: "🏢",
-            },
-          ],
-        },
-      ],
-    },
-    marker5: {
-      id: "marker5",
-      name: "Tamarind Square",
-      address: "📍 Tamarind Square, Cyberjaya",
-      description: "Tamarind Square is a popular shopping and dining complex in Cyberjaya.",
-      suggestions: [
-        {
-          id: "suggestion-1",
-          title: "Build a Tiger Sugar!",
-          upvotes: 1000,
-          isUpvoted: false,
-          image: "/public/tiger_sugar.jpg",
-          comments: [
-            {
-              id: "comment-1-1",
-              author: "sugarLover",
-              text: "Tiger Sugar would be a fantastic addition! Their brown sugar boba is the best.",
-              timestamp: "2 hours ago",
-              avatar: "🥕",
-            },
-          ],
-        },
-        {
-          id: "suggestion-2",
-          title: "Build a Boba Guys!",
-          upvotes: 100,
-          isUpvoted: true,
-          image: "/public/boba_guys.png",
-          comments: [
-            {
-              id: "comment-2-1",
-              author: "MusicLover",
-              text: "Live music would make the weekend evenings so much more fun!",
-              timestamp: "2 hours ago",
-              avatar: "🎸",
-            },
-          ],
-        },
-      ],
-    },
-  };
+  marker1: {
+    id: "marker1",
+    name: "Empty Land - Site A",
+    address: "📍 Jalan Cyberjaya 5, Cyberjaya",
+    description:
+      "This is an underutilized empty plot of land in a prime location within Cyberjaya. The site has great potential for community recreational development and could significantly benefit local residents. Currently, the area remains unused and could be transformed into a valuable community asset.",
+    suggestions: [
+    ],
+  },
+  marker2: {
+    id: "marker2",
+    name: "Empty Land - Site B",
+    address: "📍 Persiaran Multimedia, Cyberjaya",
+    description:
+      "Another underutilized piece of land in Cyberjaya that presents excellent opportunities for community development. This spacious area could host various recreational facilities that would serve the growing population in the surrounding residential and commercial areas.",
+    suggestions: [],
+  },
+  marker4: {
+    id: "marker4",
+    name: "DPULZE Shopping Centre",
+    address: "📍 DPULZE, Cyberjaya",
+    description:
+      "DPULZE Shopping Centre is one of Cyberjaya's largest and most vibrant malls, strategically located to serve both residents and visitors from surrounding areas. The mall offers an extensive variety of retail outlets, from international brands to local boutiques, providing a diverse shopping experience for all age groups and interests. In addition to its retail offerings, DPULZE boasts numerous dining options, ranging from casual eateries and cafés to fine dining establishments, catering to different tastes and budgets. The cinemas feature the latest movie releases in comfortable and modern settings, making it a popular entertainment destination. Beyond shopping and dining, DPULZE hosts a wide range of events and promotional activities throughout the year, including seasonal festivals, pop-up markets, and community engagement programs, which help strengthen social connections and foster a sense of community. The mall’s modern infrastructure, convenient parking facilities, and proximity to public transport make it highly accessible, while its focus on safety and family-friendly amenities ensures a welcoming environment for all visitors. Overall, DPULZE plays a pivotal role in Cyberjaya’s commercial landscape, not only as a shopping and entertainment hub but also as a key driver of local economic activity and community interaction.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Build a Chagee!",
+        upvotes: 3500, // more upvotes for popularity
+        isUpvoted: true,
+        image: "/public/chagee.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "Chagee123",
+            text: "Love chagee! Always wanted to have Chagee in Cyberjaya.",
+            timestamp: "2 hours ago",
+            avatar: "🛍️",
+          },
+          {
+            id: "comment-1-2",
+            author: "FoodieGal",
+            text: "It would be great to have more food options here. Chagee is a fantastic choice!",
+            timestamp: "1 hour ago",
+            avatar: "🍽️",
+          },
+          {
+            id: "comment-1-3",
+            author: "MovieBuff",
+            text: "Chagee would be a perfect addition after a movie night!",
+            timestamp: "30 minutes ago",
+            avatar: "🎬",
+          },
+          {
+            id: "comment-1-4",
+            author: "FamilyFun",
+            text: "My family would love this! Chagee has something for everyone.",
+            timestamp: "45 minutes ago",
+            avatar: "👨‍👩‍👧‍👦",
+          },
+          {
+            id: "comment-1-5",
+            author: "EventPlanner",
+            text: "Chagee could also be a great spot for community events and gatherings.",
+            timestamp: "15 minutes ago",
+            avatar: "🎉",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Build a KOI!",
+        upvotes: 200,
+        isUpvoted: false,
+        image: "/public/koi.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "TeaLover",
+            text: "KOI would be a great addition for bubble tea fans like me!",
+            timestamp: "1 hour ago",
+            avatar: "🎨",
+          },
+          {
+            id: "comment-2-2",
+            author: "ilovemyKid",
+            text: "My kid loves KOI! It would be so convenient to have one here.",
+            timestamp: "30 minutes ago",
+            avatar: "👨‍👦",
+          },
+        ],
+      },
 
+
+    ],
+  },
+
+  marker5: {
+    id: "marker5",
+    name: "Tamarind Square",
+    address: "📍 Tamarind Square, Cyberjaya",
+    description:
+      "Tamarind Square is a popular shopping and dining complex in Cyberjaya, featuring a mix of retail stores, cafes, restaurants, and entertainment options. It attracts visitors from nearby residential and commercial areas, making it a lively community hub.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Build a Tiger Sugar!",
+        upvotes: 1000,
+        isUpvoted: false,
+        image: "/public/tiger_sugar.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "sugarLover",
+            text: "Tiger Sugar would be a fantastic addition! Their brown sugar boba is the best.",
+            timestamp: "2 hours ago",
+            avatar: "🥕",
+          },
+          {
+            id: "comment-1-2",
+            author: "bobalover",
+            text: "We need more bubble tea options here.",
+            timestamp: "1 hour ago",
+            avatar: "🛒",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Build a Boba Guys!",
+        upvotes: 100,
+        isUpvoted: true,
+        image: "/public/boba_guys.png",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "MusicLover",
+            text: "Live music would make the weekend evenings so much more fun!",
+            timestamp: "2 hours ago",
+            avatar: "🎸",
+          },
+          {
+            id: "comment-2-2",
+            author: "FamilyFun",
+            text: "Perfect place for families to enjoy entertainment together.",
+            timestamp: "1 hour ago",
+            avatar: "👨‍👩‍👧‍👦",
+          },
+        ],
+      },
+    ],
+  },
+  marker8: {
+    id: "marker8",
+    name: "Empty Land - Site E",
+    address: "📍 Cyberjaya",
+    description: "Vacant plot suitable for community projects",
+    suggestions: [
+     
+    ],
+  },
+  marker9: {
+    id: "marker9",
+    name: "Empty Land - Site F",
+    address: "📍 Cyberjaya",
+    description: "Open space for potential development",
+    suggestions: [
+    ],
+  },
+  marker10: {
+    id: "marker10",
+    name: "Serin Residency",
+    address: "📍 Serin Residency, Cyberjaya",
+    description: "Residential development complex",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Community Fitness Center",
+        upvotes: 200,
+        isUpvoted: true,
+        image: "/public/fitness_center.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "ResidentA",
+            text: "A gym in the complex would be very convenient!",
+            timestamp: "2 hours ago",
+            avatar: "🏋️‍♂️",
+          },
+          {
+            id: "comment-1-2",
+            author: "ResidentB",
+            text: "Great idea for encouraging a healthy lifestyle among residents.",
+            timestamp: "1 hour ago",
+            avatar: "💪",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Community Garden",
+        upvotes: 100,
+        isUpvoted: false,
+        image: "/public/community_garden.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "GardenerGal",
+            text: "Lovely idea! Residents can grow vegetables and flowers together.",
+            timestamp: "1 hour ago",
+            avatar: "🌸",
+          },
+          {
+            id: "comment-2-2",
+            author: "EcoResident",
+            text: "Community gardens improve wellbeing and sense of community.",
+            timestamp: "45 minutes ago",
+            avatar: "🌿",
+          },
+        ],
+      },
+    ],
+  },
+  marker11: {
+    id: "marker11",
+    name: "Cyberjaya Lakeside",
+    address: "📍 Lakeside, Cyberjaya",
+    description: "Lakeside residential and recreational area",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Waterfront Jogging Path",
+        upvotes: 500,
+        isUpvoted: true,
+        image: "/public/waterfront_jogging_path.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "JoggerGuy",
+            text: "Beautiful path to exercise while enjoying the lake view!",
+            timestamp: "2 hours ago",
+            avatar: "🏃‍♂️",
+          },
+          {
+            id: "comment-1-2",
+            author: "NatureLover",
+            text: "Walking by the lake is so relaxing. Great suggestion!",
+            timestamp: "1 hour ago",
+            avatar: "🌊",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Outdoor Cafes & Benches",
+        upvotes: 350,
+        isUpvoted: false,
+        image: "/public/benches.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "CoffeeFan",
+            text: "Perfect spot to sip coffee and enjoy nature.",
+            timestamp: "1 hour ago",
+            avatar: "☕",
+          },
+          {
+            id: "comment-2-2",
+            author: "RelaxedResident",
+            text: "Adding benches makes it more welcoming for families and seniors.",
+            timestamp: "45 minutes ago",
+            avatar: "🪑",
+          },
+        ],
+      },
+    ],
+  },
+  marker13: {
+    id: "marker13",
+    name: "Equestrian Park Putrajaya",
+    address: "📍 Putrajaya",
+    description: "Horse riding and equestrian facilities",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Organize Equestrian Competitions",
+        upvotes: 400,
+        isUpvoted: true,
+        image: "/public/equestrian.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "HorseLover",
+            text: "Competitions would attract enthusiasts and tourists alike.",
+            timestamp: "2 hours ago",
+            avatar: "🐴",
+          },
+          {
+            id: "comment-1-2",
+            author: "TrainerJoe",
+            text: "Great way to promote equestrian sports locally.",
+            timestamp: "1 hour ago",
+            avatar: "🏆",
+          },
+        ],
+      },
+    ],
+  },
+  marker14: {
+    id: "marker14",
+    name: "Putrajaya Balancing Reservoir",
+    address: "📍 Putrajaya",
+    description:
+      "The Putrajaya Balancing Reservoir is a key water management facility designed to regulate water levels and prevent flooding in the surrounding areas. It also provides recreational opportunities for the public, including jogging paths, fishing spots, and scenic views, making it an important community and infrastructure asset.",
+    suggestions: [],
+  },
+  marker15: {
+    id: "marker15",
+    name: "MONSTA - Animonsta / Monsta Studios Sdn. Bhd.",
+    address: "📍 Cyberjaya",
+    description:
+      "Monsta Studios is a renowned animation studio in Cyberjaya, responsible for producing popular animated content. It operates as a creative business hub, employing animation professionals and hosting office facilities, contributing to the local creative industry.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Host Animation Workshops",
+        upvotes: 408,
+        isUpvoted: true,
+        image: "/public/animation_workshop.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "AnimFan",
+            text: "Learning animation here would be amazing for aspiring animators!",
+            timestamp: "2 hours ago",
+            avatar: "🎨",
+          },
+          {
+            id: "comment-1-2",
+            author: "StudentA",
+            text: "Great opportunity for students to gain hands-on experience.",
+            timestamp: "1 hour ago",
+            avatar: "📚",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Open Studio Tours",
+        upvotes: 305,
+        isUpvoted: false,
+        image: "/public/monsta.png",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "TouristGuy",
+            text: "Studio tours would attract tourists and fans of animation.",
+            timestamp: "1 hour ago",
+            avatar: "🎥",
+          },
+          {
+            id: "comment-2-2",
+            author: "FamilyFun",
+            text: "Kids would love seeing how animations are made!",
+            timestamp: "45 minutes ago",
+            avatar: "👨‍👩‍👧‍👦",
+          },
+        ],
+      },
+    ],
+  },
+  marker16: {
+    id: "marker16",
+    name: "Kanvas SOHO",
+    address: "📍 Cyberjaya",
+    description:
+      "Kanvas SOHO is a modern apartment building in Cyberjaya offering residential units for individuals and families. It features contemporary living spaces with convenient access to nearby amenities, making it a popular choice for urban dwellers.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Rooftop Garden & Lounge",
+        upvotes: 300,
+        isUpvoted: true,
+        image: "/public/rooftop_garden.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "ResidentA",
+            text: "Rooftop garden would be perfect for relaxation and socializing.",
+            timestamp: "2 hours ago",
+            avatar: "🌿",
+          },
+          {
+            id: "comment-1-2",
+            author: "ResidentB",
+            text: "A great way to enjoy city views and fresh air.",
+            timestamp: "1 hour ago",
+            avatar: "🏙️",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Fitness & Yoga Studio",
+        upvotes: 108,
+        isUpvoted: false,
+        image: "/public/yoga.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "FitnessFan",
+            text: "Convenient to have a gym and yoga studio within the building!",
+            timestamp: "1 hour ago",
+            avatar: "🧘",
+          },
+          {
+            id: "comment-2-2",
+            author: "HealthyResident",
+            text: "Encourages residents to maintain an active lifestyle.",
+            timestamp: "45 minutes ago",
+            avatar: "💪",
+          },
+        ],
+      },
+    ],
+  },
+  marker17: {
+    id: "marker17",
+    name: "Dell Global Business Center Sdn. Bhd.",
+    address: "📍 Cyberjaya",
+    description:
+      "Dell Global Business Center is a corporate office in Cyberjaya specializing in computer technology and IT services. The facility houses administrative, technical, and support staff, contributing to the local commercial and technology sector.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Open Tech Workshops for Students",
+        upvotes: 500,
+        isUpvoted: true,
+        image: "/public/tech_workshops.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "StudentA",
+            text: "Workshops would be an excellent learning opportunity for tech enthusiasts!",
+            timestamp: "2 hours ago",
+            avatar: "💻",
+          },
+          {
+            id: "comment-1-2",
+            author: "MentorB",
+            text: "Helps foster talent in the local technology sector.",
+            timestamp: "1 hour ago",
+            avatar: "🎓",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Corporate Open House & Tours",
+        upvotes: 3000,
+        isUpvoted: false,
+        image: "/public/dell_tour.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "VisitorA",
+            text: "Visitors can learn about Dell’s operations and career paths.",
+            timestamp: "1 hour ago",
+            avatar: "🏢",
+          },
+          {
+            id: "comment-2-2",
+            author: "StudentB",
+            text: "Great for students exploring technology careers.",
+            timestamp: "45 minutes ago",
+            avatar: "💼",
+          },
+        ],
+      },
+    ],
+  },
+  marker18: {
+    id: "marker18",
+    name: "Cyber Heights Villa",
+    address: "📍 Cyberjaya",
+    description:
+      "Cyber Heights Villa is a residential apartment complex in Cyberjaya, offering comfortable living spaces for individuals and families. The building provides modern amenities and convenient access to nearby services and facilities.",
+    suggestions: [
+      {
+        id: "suggestion-1",
+        title: "Community Lounge & Library",
+        upvotes: 48,
+        isUpvoted: true,
+        image: "/public/community_lounge.jpg",
+        comments: [
+          {
+            id: "comment-1-1",
+            author: "ResidentA",
+            text: "A lounge and library would foster community interaction and learning.",
+            timestamp: "2 hours ago",
+            avatar: "📚",
+          },
+          {
+            id: "comment-1-2",
+            author: "ResidentB",
+            text: "Perfect for reading and socializing in a cozy space.",
+            timestamp: "1 hour ago",
+            avatar: "☕",
+          },
+        ],
+      },
+      {
+        id: "suggestion-2",
+        title: "Kids’ Indoor Play Area",
+        upvotes: 35,
+        isUpvoted: false,
+        image: "/public/indoor_play.jpg",
+        comments: [
+          {
+            id: "comment-2-1",
+            author: "ParentMom",
+            text: "Indoor play area keeps kids entertained safely during all seasons!",
+            timestamp: "1 hour ago",
+            avatar: "🛝",
+          },
+          {
+            id: "comment-2-2",
+            author: "ParentDad",
+            text: "Excellent idea! Encourages kids to be active and socialize.",
+            timestamp: "45 minutes ago",
+            avatar: "👨‍👦",
+          },
+        ],
+      },
+    ],
+  },
+
+};
   // Flatten all suggestions and add location info
   const allSuggestions: Suggestion[] = [];
   Object.entries(locationDataMap).forEach(([locationId, locationData]) => {
@@ -251,13 +586,13 @@ const Hots = () => {
   // Sort by upvotes (highest first)
   const sortedSuggestions = allSuggestions.sort((a, b) => b.upvotes - a.upvotes);
 
-  // Filter by search term and limit to top 3
+  // Filter by search term and limit to top 10
   const filteredSuggestions = sortedSuggestions
     .filter(suggestion =>
       suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       suggestion.locationName?.toLowerCase().includes(searchTerm.toLowerCase())
     )
-    .slice(0, 10); // Only show top 3 suggestions
+    .slice(0, 10); // Only show top 10 suggestions
 
   const getRankIcon = (index: number) => {
     switch (index) {
@@ -367,7 +702,16 @@ const Hots = () => {
 
                 <div className="suggestion-info">
                   <div className="suggestion-header">
-                    <h3 className="suggestion-title">{suggestion.title}</h3>
+                    <div className="title-container">
+                      <h3 className="suggestion-title">
+                        {suggestion.title}
+                        {index < 3 && (
+                          <span className="trending-badge">
+                            🔥 TRENDING
+                          </span>
+                        )}
+                      </h3>
+                    </div>
                     <div className="upvotes-container">
                       <button className={`upvote-btn ${suggestion.isUpvoted ? 'upvoted' : ''}`}>
                         👍 {suggestion.upvotes.toLocaleString()}
@@ -405,11 +749,7 @@ const Hots = () => {
               </div>
 
               {/* Trending Indicator */}
-              {index < 3 && (
-                <div className="trending-badge">
-                  🔥 TRENDING
-                </div>
-              )}
+
             </div>
           ))
         )}
