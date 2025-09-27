@@ -2,6 +2,8 @@ import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import GoogleMap from "./components/GoogleMap";
 import LocationDiscussion from "./components/LocationDiscussion";
+import AddSuggestion from "./components/AddSuggestion";
+import Dify from "./components/Dify";
 
 function App() {
   // Get API key from environment variables
@@ -61,16 +63,18 @@ function App() {
             element={
               <GoogleMap
                 apiKey={apiKey}
-                center="2.907339562947603,101.65639822584465"
-                zoom={13}
+                center="2.9089783942489014, 101.65710017412017"
+                zoom={18}
                 mapId="DEMO_MAP_ID"
               />
             }
           />
+          <Route path="/location/marker3" element={<AddSuggestion />} />
           <Route
             path="/location/:locationId"
             element={<LocationDiscussion />}
           />
+          <Route path="/dify" element={<Dify />} />
         </Routes>
       </div>
     </Router>

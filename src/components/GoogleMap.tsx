@@ -67,6 +67,19 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         timestamp: "2025-09-27 11:15:00",
       },
     },
+    {
+      id: "marker3",
+      position: { lat: 2.914325025735, lng: 101.66068615884222 },
+      color: "#dc3545", // Red
+      title: "Empty Land - Site C",
+      description: "Strategic location for mixed-use development project",
+      details: {
+        type: "Mixed-Use Development",
+        severity: "Medium Priority",
+        reportedBy: "Urban Planning Department",
+        timestamp: "2025-09-27 12:00:00",
+      },
+    },
   ];
 
   useEffect(() => {
@@ -85,10 +98,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
       containerRef.current.innerHTML = `
         <gmpx-api-loader key="${apiKey}" solution-channel="GMP_GE_mapsandplacesautocomplete_v2"></gmpx-api-loader>
+        <div class="map-controls">
+          <button id="view-toggle-btn" class="view-toggle-button">
+            🛰️ Satellite
+          </button>
+        </div>
         <gmp-map center="${center}" zoom="${zoom}" map-id="${mapId}">
-          <div slot="control-block-start-inline-start" class="place-picker-container">
-            <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-          </div>
           <gmp-advanced-marker id="center-marker"></gmp-advanced-marker>
           <gmp-advanced-marker id="search-marker"></gmp-advanced-marker>
           ${customMarkersHTML}
@@ -105,18 +120,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const searchMarker = containerRef.current.querySelector(
         "#search-marker"
       ) as any;
-      const placePicker = containerRef.current.querySelector(
-        "gmpx-place-picker"
-      ) as any;
 
-      if (
-        !map ||
-        !centerMarker ||
-        !searchMarker ||
-        !placePicker ||
-        !window.google
-      )
-        return;
+      if (!map || !centerMarker || !searchMarker || !window.google) return;
 
       const infowindow = new window.google.maps.InfoWindow();
 
@@ -128,6 +133,34 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         mapTypeControl: false,
         mapTypeId: window.google.maps.MapTypeId.HYBRID,
       });
+
+      // Add view toggle functionality
+      let isHybridView = true;
+      const toggleButton = containerRef.current.querySelector(
+        "#view-toggle-btn"
+      ) as HTMLButtonElement;
+
+      if (toggleButton) {
+        toggleButton.addEventListener("click", () => {
+          if (isHybridView) {
+            // Switch to Satellite view
+            map.innerMap.setOptions({
+              mapTypeId: window.google.maps.MapTypeId.SATELLITE,
+            });
+            toggleButton.innerHTML = "🗺️ Hybrid";
+            toggleButton.title = "Switch to Hybrid view";
+            isHybridView = false;
+          } else {
+            // Switch to Hybrid view
+            map.innerMap.setOptions({
+              mapTypeId: window.google.maps.MapTypeId.HYBRID,
+            });
+            toggleButton.innerHTML = "🛰️ Satellite";
+            toggleButton.title = "Switch to Satellite view";
+            isHybridView = true;
+          }
+        });
+      }
 
       // Get Street View panorama
       const panorama = map.innerMap.getStreetView();
@@ -163,7 +196,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                 onmouseover="this.style.backgroundColor='#0056b3'"
                 onmouseout="this.style.backgroundColor='#007bff'"
               >
-                💬 View Discussion
+                ${
+                  data.id === "marker3"
+                    ? "➕ Add Suggestion"
+                    : "💬 View Discussion"
+                }
               </button>
             </div>
           </div>
@@ -284,7 +321,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                     onmouseover="this.style.backgroundColor='#0056b3'"
                     onmouseout="this.style.backgroundColor='#007bff'"
                   >
-                    💬 View Discussion
+                    ${
+                      markerData.id === "marker3"
+                        ? "➕ Add Suggestion"
+                        : "💬 View Discussion"
+                    }
                   </button>
                 </div>
               </div>
@@ -294,33 +335,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             infowindow.open(map.innerMap, markerElement);
           });
         }
-      });
-
-      placePicker.addEventListener("gmpx-placechange", () => {
-        const place = placePicker.value;
-
-        if (!place.location) {
-          window.alert("No details available for input: '" + place.name + "'");
-          infowindow.close();
-          // Hide the search marker but keep the center marker
-          searchMarker.position = null;
-          return;
-        }
-
-        if (place.viewport) {
-          map.innerMap.fitBounds(place.viewport);
-        } else {
-          map.center = place.location;
-          map.zoom = 17;
-        }
-
-        // Show the search result marker
-        searchMarker.position = place.location;
-        infowindow.setContent(
-          `<strong>${place.displayName}</strong><br>
-           <span>${place.formattedAddress}</span>`
-        );
-        infowindow.open(map.innerMap, searchMarker);
       });
     };
 
