@@ -9,6 +9,13 @@ interface GoogleMapProps {
   mapId?: string;
 }
 
+const CYBERJAYA_BOUNDS = {
+  north: 2.978, // top + padding
+  south: 2.868, // bottom - padding
+  west: 101.612, // left - padding
+  east: 101.703, // right + padding
+};
+
 interface CustomMarker {
   id: string;
   position: { lat: number; lng: number };
@@ -26,6 +33,7 @@ interface CustomMarker {
 declare global {
   interface Window {
     google: any;
+    navigateToLocation?: (id: string) => void;
   }
 }
 
@@ -42,7 +50,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker1",
       position: { lat: 2.907339562947603, lng: 101.65639822584465 },
-      color: "#28a745", // Green
+      color: "#28a745",
       title: "Empty Land - Site A",
       description: "Underutilized land with potential for community development",
       details: {
@@ -55,7 +63,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker2",
       position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
-      color: "#17a2b8", // Blue
+      color: "#17a2b8",
       title: "Empty Land - Site B",
       description: "Prime location for recreational facilities development",
       details: {
@@ -68,7 +76,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker3",
       position: { lat: 2.914325025735, lng: 101.66068615884222 },
-      color: "#dc3545", // Red
+      color: "#dc3545",
       title: "Empty Land - Site C",
       description: "Strategic location for mixed-use development project",
       details: {
@@ -81,87 +89,80 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   ];
 
   useEffect(() => {
-    const init = async () => {
-      if (!containerRef.current) return;
+    let mounted = true;
+    containerRef.current!.innerHTML = `
+      <!-- Hamburger button + menu -->
+      <button id="hamburger-btn" class="hamburger-btn" aria-label="Open menu" aria-expanded="false">☰</button>
+      <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
+        <div id="menu-address" class="menu-row menu-address"></div>
+        <button id="menu-satellite" class="menu-row menu-action">🛰️ Satellite</button>
+        <button id="menu-business" class="menu-row menu-action">🏢 Business</button>
+        <button id="menu-settings" class="menu-row menu-action">⚙️ Settings</button>
+        <button id="menu-profile" class="menu-row menu-action">👤 Profile</button>
+      </div>
 
-      // NOTE: we no longer render <gmp-advanced-marker> for each custom marker here.
-      // keep only loader and place-picker + center/search markers + view toggle
-      containerRef.current.innerHTML = `
-        <gmpx-api-loader key="${apiKey}" solution-channel="GMP_GE_mapsandplacesautocomplete_v2"></gmpx-api-loader>
-        <div class="map-controls">
-          <button id="view-toggle-btn" class="view-toggle-button">
-            🛰️ Satellite
-          </button>
+      <!-- The gmp loader + map + inline controls (kept from your original) -->
+      <gmpx-api-loader key="${apiKey}" solution-channel="GMP_GE_mapsandplacesautocomplete_v2"></gmpx-api-loader>
+      <div class="map-controls">
+        <button id="view-toggle-btn" class="view-toggle-button">🛰️ Satellite</button>
+      </div>
+      <gmp-map center="${center}" zoom="${zoom}" map-id="${mapId}">
+        <div slot="control-block-start-inline-start" class="place-picker-container">
+          <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
         </div>
-        <gmp-map center="${center}" zoom="${zoom}" map-id="${mapId}">
-          <div slot="control-block-start-inline-start" class="place-picker-container">
-            <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
-          </div>
-          <gmp-advanced-marker id="center-marker"></gmp-advanced-marker>
-          <gmp-advanced-marker id="search-marker"></gmp-advanced-marker>
-        </gmp-map>
-      `;
+        <gmp-advanced-marker id="center-marker"></gmp-advanced-marker>
+        <gmp-advanced-marker id="search-marker"></gmp-advanced-marker>
+      </gmp-map>
+    `;
 
-      // Wait for the custom elements to be defined
+    const init = async () => {
+      if (!mounted || !containerRef.current) return;
+
+      // Wait for custom elements definitions
       await customElements.whenDefined("gmp-map");
+      // gmpx-place-picker is used both inside map and inside menu; wait for it too
+      await customElements.whenDefined("gmpx-place-picker");
+
+      if (!mounted || !containerRef.current) return;
 
       const map = containerRef.current.querySelector("gmp-map") as any;
-      const centerMarker = containerRef.current.querySelector(
-        "#center-marker"
-      ) as any;
-      const searchMarker = containerRef.current.querySelector(
-        "#search-marker"
-      ) as any;
-      const placePicker = containerRef.current.querySelector(
-        "gmpx-place-picker"
-      ) as any;
+      const centerMarker = containerRef.current.querySelector("#center-marker") as any;
+      const searchMarker = containerRef.current.querySelector("#search-marker") as any;
+      const placePicker = containerRef.current.querySelector("gmpx-place-picker") as any;
 
-      if (!map || !centerMarker || !searchMarker || !placePicker || !window.google)
+      const hamburgerBtn = containerRef.current.querySelector("#hamburger-btn") as HTMLButtonElement;
+      const hamburgerMenu = containerRef.current.querySelector("#hamburger-menu") as HTMLDivElement;
+      const menuAddressContainer = containerRef.current.querySelector("#menu-address") as HTMLDivElement;
+      const menuSatelliteBtn = containerRef.current.querySelector("#menu-satellite") as HTMLButtonElement;
+      const menuBusinessBtn = containerRef.current.querySelector("#menu-business") as HTMLButtonElement;
+      const menuSettingsBtn = containerRef.current.querySelector("#menu-settings") as HTMLButtonElement;
+      const menuProfileBtn = containerRef.current.querySelector("#menu-profile") as HTMLButtonElement;
+      const toggleButton = containerRef.current.querySelector("#view-toggle-btn") as HTMLButtonElement;
+
+      if (!map || !centerMarker || !searchMarker || !placePicker || !window.google) {
+        console.warn("Map or required elements not found or window.google missing");
         return;
+      }
 
       const infowindow = new window.google.maps.InfoWindow();
 
-      // Set the center marker to always show at the map center
+      // center marker
       const [lat, lng] = center.split(",").map(Number);
       centerMarker.position = { lat, lng };
 
       map.innerMap.setOptions({
         mapTypeControl: false,
         mapTypeId: window.google.maps.MapTypeId.HYBRID,
+        restriction: {
+          latLngBounds: CYBERJAYA_BOUNDS,
+          strictBounds: true,
+        },
       });
-
-      // Add view toggle functionality
-      let isHybridView = true;
-      const toggleButton = containerRef.current.querySelector(
-        "#view-toggle-btn"
-      ) as HTMLButtonElement;
-
-      if (toggleButton) {
-        toggleButton.addEventListener("click", () => {
-          if (isHybridView) {
-            // Switch to Satellite view
-            map.innerMap.setOptions({
-              mapTypeId: window.google.maps.MapTypeId.SATELLITE,
-            });
-            toggleButton.innerHTML = "🗺️ Hybrid";
-            toggleButton.title = "Switch to Hybrid view";
-            isHybridView = false;
-          } else {
-            // Switch to Hybrid view
-            map.innerMap.setOptions({
-              mapTypeId: window.google.maps.MapTypeId.HYBRID,
-            });
-            toggleButton.innerHTML = "🛰️ Satellite";
-            toggleButton.title = "Switch to Satellite view";
-            isHybridView = true;
-          }
-        });
-      }
 
       // Street View panorama
       const panorama = map.innerMap.getStreetView();
 
-      // Helper: severity color
+      // HELPERS
       function getSeverityColor(severity: string): string {
         switch (severity.toLowerCase()) {
           case "critical":
@@ -177,7 +178,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         }
       }
 
-      // Helper to open info window for a marker and its data
       const showInfo = (marker: any, data: any) => {
         const content = `
           <div class="marker-tooltip">
@@ -185,9 +185,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             <p style="margin: 0 0 8px 0; color: #666;">${data.description}</p>
             <div class="marker-details">
               <p><strong>Type:</strong> ${data.details.type}</p>
-              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(
-                data.details.severity
-              )}">${data.details.severity}</span></p>
+              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(data.details.severity)}">${data.details.severity}</span></p>
               <p><strong>Reported By:</strong> ${data.details.reportedBy}</p>
               <p><strong>Timestamp:</strong> ${data.details.timestamp}</p>
             </div>
@@ -208,45 +206,33 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                 onmouseover="this.style.backgroundColor='#0056b3'"
                 onmouseout="this.style.backgroundColor='#007bff'"
               >
-                ${
-                  data.id === "marker3"
-                    ? "➕ Add Suggestion"
-                    : "💬 View Discussion"
-                }
+                ${data.id === "marker3" ? "➕ Add Suggestion" : "💬 View Discussion"}
               </button>
             </div>
           </div>
         `;
-        // Auto-detect map or panorama because marker.getMap() returns that
         infowindow.setContent(content);
         try {
           infowindow.open(marker.getMap(), marker);
-        } catch (e) {
-          // fallback: open on map
+        } catch {
           infowindow.open(map.innerMap, marker);
         }
       };
 
-      // Make navigateToLocation available for the inline button in the InfoWindow
-      (window as any).navigateToLocation = (locationId: string) => {
-        console.log("Navigating to location:", locationId);
+      // Make navigateToLocation available for inline button
+      window.navigateToLocation = (locationId: string) => {
         navigate(`/location/${locationId}`);
       };
 
-      // For each custom marker we create a single google.maps.Marker and then
-      // move .setMap(...) between the map and the panorama when Street View opens.
+      // Add markers (single shared google.maps.Marker per item, moved to panorama when needed)
       customMarkers.forEach((markerData) => {
-        // Create SVG icon
         const svg = `
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
             <circle cx="16" cy="16" r="10" fill="${markerData.color}" stroke="white" stroke-width="2"/>
           </svg>
         `;
-        const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
-          svg
-        )}`;
+        const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 
-        // Shared marker (one instance only)
         const sharedMarker = new window.google.maps.Marker({
           position: markerData.position,
           title: markerData.title,
@@ -255,45 +241,44 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             scaledSize: new window.google.maps.Size(28, 28),
             anchor: new window.google.maps.Point(14, 14),
           },
-          map: map.innerMap, // default: add to map
+          map: map.innerMap,
           clickable: true,
         });
 
-        // Click opens same info window regardless of parent (map / panorama)
         sharedMarker.addListener("click", () => showInfo(sharedMarker, markerData));
 
-        // When panorama visibility changes, move the marker into the panorama or back to the map.
         const updateMarkerParent = () => {
           try {
-            const svVisible =
-              typeof panorama.getVisible === "function"
-                ? panorama.getVisible()
-                : !!(panorama && (panorama as any).visible);
+            const svVisible = typeof panorama.getVisible === "function"
+              ? panorama.getVisible()
+              : !!(panorama && (panorama as any).visible);
             if (svVisible) {
               sharedMarker.setMap(panorama);
             } else {
               sharedMarker.setMap(map.innerMap);
             }
           } catch (err) {
-            // if anything fails, put it back on the map
             sharedMarker.setMap(map.innerMap);
             console.error("Error updating marker parent:", err);
           }
         };
 
-        // Ensure update initially and whenever visibility changes
         updateMarkerParent();
         panorama.addListener("visible_changed", updateMarkerParent);
       });
 
-      // Place picker behavior
-      placePicker.addEventListener("gmpx-placechange", () => {
-        const place = placePicker.value;
+      // ---------- PLACE PICKER HANDLING ----------
+      // Create a place-picker inside the hamburger menu (menuPlacePicker) and wire it up.
+      const menuPlacePicker = document.createElement("gmpx-place-picker");
+      menuPlacePicker.setAttribute("placeholder", "Enter an address");
+      menuPlacePicker.setAttribute("class", "menu-place-picker");
+      if (menuAddressContainer) menuAddressContainer.appendChild(menuPlacePicker);
 
-        if (!place.location) {
-          window.alert("No details available for input: '" + place.name + "'");
+      const handlePlaceSelection = (picker: any) => {
+        const place = picker.value;
+        if (!place || !place.location) {
+          window.alert("No details available for input: '" + (place?.name ?? "") + "'");
           infowindow.close();
-          // Hide the search marker but keep the center marker
           searchMarker.position = null;
           return;
         }
@@ -305,17 +290,98 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           map.zoom = 17;
         }
 
-        // Show the search result marker (this is the gmp-advanced-marker element)
         searchMarker.position = place.location;
-        infowindow.setContent(
-          `<strong>${place.displayName}</strong><br>
-           <span>${place.formattedAddress}</span>`
-        );
+        infowindow.setContent(`<strong>${place.displayName}</strong><br><span>${place.formattedAddress || ""}</span>`);
         infowindow.open(map.innerMap, searchMarker);
+
+        // Close hamburger menu if open
+        if (hamburgerMenu && hamburgerMenu.classList.contains("open")) {
+          hamburgerMenu.classList.remove("open");
+          hamburgerMenu.setAttribute("aria-hidden", "true");
+          if (hamburgerBtn) hamburgerBtn.setAttribute("aria-expanded", "false");
+        }
+      };
+
+      // Listen to both place pickers (the one inside map & the one in menu)
+      menuPlacePicker.addEventListener("gmpx-placechange", () => handlePlaceSelection(menuPlacePicker));
+      placePicker.addEventListener("gmpx-placechange", () => handlePlaceSelection(placePicker));
+
+      // ---------- HAMBURGER TOGGLE ----------
+      const toggleMenu = () => {
+        if (!hamburgerMenu || !hamburgerBtn) return;
+        const isOpen = hamburgerMenu.classList.toggle("open");
+        hamburgerMenu.setAttribute("aria-hidden", isOpen ? "false" : "true");
+        hamburgerBtn.setAttribute("aria-expanded", String(isOpen));
+      };
+
+      hamburgerBtn?.addEventListener("click", toggleMenu);
+
+      // ---------- VIEW TOGGLE / SATELLITE ----------
+      let isHybridView = true;
+      const setViewButtonState = () => {
+        if (!toggleButton || !menuSatelliteBtn) return;
+        if (isHybridView) {
+          toggleButton.innerHTML = "🛰️ Satellite";
+          toggleButton.title = "Switch to Satellite view";
+          menuSatelliteBtn.textContent = "🛰️ Satellite";
+        } else {
+          toggleButton.innerHTML = "🗺️ Hybrid";
+          toggleButton.title = "Switch to Hybrid view";
+          menuSatelliteBtn.textContent = "🗺️ Hybrid";
+        }
+      };
+
+      const toggleMapView = () => {
+        if (!map || !window.google) return;
+        if (isHybridView) {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.SATELLITE });
+          isHybridView = false;
+        } else {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.HYBRID });
+          isHybridView = true;
+        }
+        setViewButtonState();
+      };
+
+      toggleButton?.addEventListener("click", toggleMapView);
+      menuSatelliteBtn?.addEventListener("click", () => {
+        toggleMapView();
+        // close menu after selection
+        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+      });
+
+      setViewButtonState();
+
+      // ---------- MENU NAV ACTIONS ----------
+      menuBusinessBtn?.addEventListener("click", () => {
+        navigate("/business");
+        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+      });
+      menuSettingsBtn?.addEventListener("click", () => {
+        navigate("/settings");
+        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+      });
+      menuProfileBtn?.addEventListener("click", () => {
+        navigate("/profile");
+        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
       });
     };
 
     init();
+
+    return () => {
+      mounted = false;
+      // clear injected DOM so listeners are gone
+      try {
+        if (containerRef.current) containerRef.current.innerHTML = "";
+      } catch (e) {
+        console.warn("Error during cleanup", e);
+      }
+      // Remove global function
+      try {
+        delete (window as any).navigateToLocation;
+      } catch {}
+    };
   }, [apiKey, center, zoom, mapId, navigate]);
 
   return <div className="google-map-container" ref={containerRef}></div>;
