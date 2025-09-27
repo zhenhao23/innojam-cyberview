@@ -65,7 +65,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker2",
       position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
-      color: "#17a2b8",
+      color: "#28a745",
       title: "Empty Land - Site B",
       description: "Prime location for recreational facilities development",
       details: {
@@ -238,7 +238,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     {
       id: "marker17",
       position: { lat: 2.9102540602222082, lng: 101.65725381377584 },
-      color: "#17a2b8", // Blue - Commercial / Office
+      color: "#071cffff", // Blue - Commercial / Office
       title: "Dell Global Business Center Sdn. Bhd.",
       description: "Dell Global Business Center is a corporate office in Cyberjaya specializing in computer technology and IT services. The facility houses administrative, technical, and support staff, contributing to the local commercial and technology sector.",
       details: {

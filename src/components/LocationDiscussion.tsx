@@ -570,7 +570,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Open Studio Tours",
         upvotes: 305,
         isUpvoted: false,
-        image: "/public/monsta.jpg",
+        image: "/public/monsta.png",
         comments: [
           {
             id: "comment-2-1",
