@@ -241,12 +241,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     }
 
 
-
-
-
-
-
-
   ];
 
   useEffect(() => {
@@ -345,6 +339,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
       map.innerMap.setOptions({
         mapTypeControl: false,
+        fullscreenControl: false,          // ← disable fullscreen button
+
         mapTypeId: window.google.maps.MapTypeId.HYBRID,
         restriction: {
           latLngBounds: CYBERJAYA_BOUNDS,
