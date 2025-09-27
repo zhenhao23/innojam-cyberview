@@ -257,7 +257,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
         <button id="menu-mapSymbol" class="menu-row menu-action">🗺️ Map Symbol</button>
         <button id="menu-sat-terrain" class="menu-row menu-action">⛰️ Terrain</button>
-        <button id="menu-business" class="menu-row menu-action">🏢 Business</button>
+        <button id="menu-report" class="menu-row menu-action">📊 Reports</button>
+        <button id="menu-ai-insights" class="menu-row menu-action">🏢 AI Ask Insights</button>
         <button id="menu-addANewLocation" class="menu-row menu-action">📍 Propose a New Location</button>
         <button id="menu-settings" class="menu-row menu-action">⚙️ Settings</button>
         <button id="menu-profile" class="menu-row menu-action">👤 Profile</button>
@@ -306,8 +307,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const menuSatTerrainBtn = containerRef.current.querySelector(
         "#menu-sat-terrain"
       ) as HTMLButtonElement;
-      const menuBusinessBtn = containerRef.current.querySelector(
-        "#menu-business"
+      const menuAIInsightsBtn = containerRef.current.querySelector(
+        "#menu-ai-insights"
+      ) as HTMLButtonElement;
+      const menuReportBtn = containerRef.current.querySelector(
+        "#menu-report"
       ) as HTMLButtonElement;
       const menuSettingsBtn = containerRef.current.querySelector(
         "#menu-settings"
@@ -604,10 +608,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       menuSatTerrainBtn?.addEventListener("click", () => {
         toggleSatTerrain();
       });
-
-      // navigation buttons: do not auto-close the menu per your requirement.
-      menuBusinessBtn?.addEventListener("click", () => {
-        navigate("/business");
+      menuAIInsightsBtn?.addEventListener("click", () => {
+        navigate("/ai-insights");
+      });
+      menuReportBtn?.addEventListener("click", () => {
+        navigate("/reports");
       });
       menuSettingsBtn?.addEventListener("click", () => {
         alert("Coming Soon!");

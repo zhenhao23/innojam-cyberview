@@ -392,7 +392,7 @@
   font-weight: 600;
   margin-bottom: 20px;
   padding: 18px 24px;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   border-radius: 12px;
   position: relative;
   overflow: hidden;
@@ -421,10 +421,11 @@
 }
 
 .digital-id-btn .social-icon {
-  width: 24px;
-  height: 24px;
+  width: 70px;
   filter: brightness(0) invert(1);
 }
+
+
 
 /* Footer */
 .login-footer {

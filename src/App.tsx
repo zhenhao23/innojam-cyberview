@@ -5,8 +5,9 @@ import LocationRouter from "./components/LocationRouter";
 import SuggestionSummary from "./components/SuggestionSummary";
 import Dify from "./components/Dify";
 import { ChatProvider } from "./contexts/ChatContext";
-// import DifyBusiness from "./components/DifyBusiness";
+import DifyBusiness from "./components/DifyBusiness";
 import Login from "./components/Login";
+import Report from "./components/Report";
 
 
 
@@ -78,7 +79,8 @@ function App() {
             <Route path="/suggestion-summary" element={<SuggestionSummary />} />
             <Route path="/location/:locationId" element={<LocationRouter />} />
             <Route path="/dify" element={<Dify />} />
-            {/* <Route path="/business" element={<DifyBusiness />} /> */}
+            <Route path="/ai-insights" element={<DifyBusiness />} />
+            <Route path="/reports" element={<Report />} />
             <Route path="/login" element={<Login />} />
           </Routes>
         </div>

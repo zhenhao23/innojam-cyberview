@@ -26,10 +26,9 @@ const Login = () => {
       <div className="login-card">
         <div className="login-header">
           <div className="app-logo">
-            <span className="logo-icon">🌐</span>
-            <h1 className="app-title">CyberView</h1>
+            <h1 className="app-title">SmartCyber</h1>
           </div>
-          <p className="app-subtitle">Smart City Development Platform</p>
+          <p className="app-subtitle">Your voices, our data. A smarter Cyberjaya.</p>
         </div>
 
         <div className="login-form">
@@ -39,8 +38,7 @@ const Login = () => {
             className="social-btn digital-id-btn"
             onClick={handleDigitalIdLogin}
           >
-            <img src={digitalIdIcon} alt="Digital ID" className="social-icon" />
-            Continue with Digital ID
+            Continue with <img src={digitalIdIcon} alt="Digital ID" className="social-icon digital-id-icon" width={80} />
           </button>
         </div>
 
