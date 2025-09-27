@@ -360,7 +360,7 @@
 
 .trending-badge {
   position: absolute;
-  top: 15px;
+  top: 50px;
   right: 20px;
   background: linear-gradient(135deg, #ff4757, #ff3742);
   color: white;
@@ -371,6 +371,7 @@
   letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3);
   animation: pulse-trending 2s infinite;
+  z-index: 2;
 }
 
 @keyframes pulse-trending {

@@ -251,11 +251,13 @@ const Hots = () => {
   // Sort by upvotes (highest first)
   const sortedSuggestions = allSuggestions.sort((a, b) => b.upvotes - a.upvotes);
 
-  // Filter by search term
-  const filteredSuggestions = sortedSuggestions.filter(suggestion =>
-    suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    suggestion.locationName?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Filter by search term and limit to top 3
+  const filteredSuggestions = sortedSuggestions
+    .filter(suggestion =>
+      suggestion.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      suggestion.locationName?.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .slice(0, 10); // Only show top 3 suggestions
 
   const getRankIcon = (index: number) => {
     switch (index) {
@@ -301,7 +303,7 @@ const Hots = () => {
       </div>
 
       {/* Stats */}
-      <div className="stats-section">
+      {/* <div className="stats-section">
         <div className="stats-container">
           <div className="stat-item">
             <span className="stat-number">10</span>
@@ -316,7 +318,7 @@ const Hots = () => {
             <span className="stat-label">Locations</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Search */}
       <div className="search-section">

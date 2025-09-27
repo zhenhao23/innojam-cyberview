@@ -20,79 +20,19 @@ const Report = () => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
 
-  // Mock report data
+  // Mock business report data
   const reportData: ReportData[] = [
     {
-      id: "RPT-001",
-      title: "Basketball Court Development Proposal",
-      type: "development",
-      status: "in-progress",
-      priority: "high",
-      location: "Site A - Cyberjaya Central",
-      submittedBy: "Community Sports Committee",
-      submittedDate: "2025-09-25",
-      description: "Proposal to develop a modern basketball court with LED lighting and proper drainage system.",
-      tags: ["sports", "recreation", "youth", "community"]
-    },
-    {
-      id: "RPT-002",
-      title: "Swimming Pool Complex Planning",
-      type: "development",
-      status: "pending",
-      priority: "medium",
-      location: "Site B - Near DPULZE",
-      submittedBy: "Cyberjaya Residents Association",
-      submittedDate: "2025-09-24",
-      description: "Community-requested swimming pool complex with Olympic-size pool and children's area.",
-      tags: ["sports", "swimming", "family", "health"]
-    },
-    {
-      id: "RPT-003",
-      title: "Smart Traffic Light System",
-      type: "infrastructure",
-      status: "completed",
-      priority: "critical",
-      location: "Persiaran Apec Intersection",
-      submittedBy: "Transportation Authority",
-      submittedDate: "2025-09-20",
-      description: "Implementation of AI-powered traffic management system to reduce congestion.",
-      tags: ["traffic", "ai", "smart-city", "efficiency"]
-    },
-    {
-      id: "RPT-004",
-      title: "Community Garden Initiative",
-      type: "community",
-      status: "in-progress",
-      priority: "low",
-      location: "Empty Land Site C",
-      submittedBy: "Green Cyberjaya Movement",
-      submittedDate: "2025-09-22",
-      description: "Urban farming project to promote sustainability and community bonding.",
-      tags: ["sustainability", "farming", "environment", "community"]
-    },
-    {
-      id: "RPT-005",
-      title: "Tech Startup Hub Development",
+      id: "BRP-001",
+      title: "Chagee Bubble Tea Store Opening",
       type: "business",
-      status: "pending",
+      status: "in-progress",
       priority: "high",
-      location: "Near IOI City Mall",
-      submittedDate: "2025-09-26",
-      submittedBy: "Cyberjaya Business Council",
-      description: "Co-working space and incubator for technology startups and entrepreneurs.",
-      tags: ["business", "technology", "startups", "innovation"]
-    },
-    {
-      id: "RPT-006",
-      title: "Parking Infrastructure Upgrade",
-      type: "infrastructure",
-      status: "rejected",
-      priority: "medium",
-      location: "Tamarind Square",
-      submittedBy: "Mall Management",
-      submittedDate: "2025-09-18",
-      description: "Additional parking levels and smart parking system implementation.",
-      tags: ["parking", "infrastructure", "convenience"]
+      location: "DPULZE Shopping Centre, Cyberjaya",
+      submittedBy: "DPULZE Management & Chagee Malaysia",
+      submittedDate: "2025-09-27",
+      description: "Establishment of a new Chagee bubble tea outlet in DPULZE Shopping Centre. This popular Taiwanese bubble tea brand will bring authentic flavors and high-quality beverages to Cyberjaya residents and visitors. The store will feature modern interior design, extensive menu options, and will contribute to the mall's dining and beverage ecosystem. Expected to create local employment opportunities and attract more foot traffic to the shopping center.",
+      tags: ["food-beverage", "retail", "franchise", "taiwanese", "bubble-tea", "chagee", "commercial"]
     }
   ];
 
@@ -156,8 +96,8 @@ const Report = () => {
             ← Back to Map
           </button>
           <div className="header-title">
-            <h1>📊 Development Reports</h1>
-            <p>Track and manage Cyberjaya development projects and initiatives</p>
+            <h1>🏢 Business Reports</h1>
+            <p>Track and manage Cyberjaya business development and commercial initiatives</p>
           </div>
         </div>
       </div>
@@ -308,10 +248,6 @@ const Report = () => {
         )}
       </div>
 
-      {/* Floating Action Button */}
-      <button className="fab" title="Create New Report">
-        ➕
-      </button>
     </div>
   );
 };
