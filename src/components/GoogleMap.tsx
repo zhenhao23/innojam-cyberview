@@ -49,7 +49,32 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
   const customMarkers: CustomMarker[] = [
     // Original markers
-
+    {
+      id: "marker1",
+      position: { lat: 2.907339562947603, lng: 101.65639822584465 },
+      color: "#28a745",
+      title: "Empty Land - Site A",
+      description: "Underutilized land with potential for community development",
+      details: {
+        type: "Community Development",
+        severity: "Opportunity",
+        reportedBy: "Community Planning Committee",
+        timestamp: "2025-09-27 10:30:00",
+      },
+    },
+    {
+      id: "marker2",
+      position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
+      color: "#17a2b8",
+      title: "Empty Land - Site B",
+      description: "Prime location for recreational facilities development",
+      details: {
+        type: "Land Development",
+        severity: "High Priority",
+        reportedBy: "Residents Association",
+        timestamp: "2025-09-27 11:15:00",
+      },
+    },
     {
       id: "marker3",
       position: { lat: 2.914325025735, lng: 101.66068615884222 },
