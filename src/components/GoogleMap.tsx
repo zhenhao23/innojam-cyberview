@@ -38,15 +38,13 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Hardcoded markers with different colors and mock data
   const customMarkers: CustomMarker[] = [
     {
       id: "marker1",
       position: { lat: 2.907339562947603, lng: 101.65639822584465 },
       color: "#28a745", // Green
       title: "Empty Land - Site A",
-      description:
-        "Underutilized land with potential for community development",
+      description: "Underutilized land with potential for community development",
       details: {
         type: "Community Development",
         severity: "Opportunity",
@@ -86,16 +84,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     const init = async () => {
       if (!containerRef.current) return;
 
-      // Create the HTML structure with custom markers
-      const customMarkersHTML = customMarkers
-        .map(
-          (marker) =>
-            `<gmp-advanced-marker id="${marker.id}" position="${marker.position.lat},${marker.position.lng}">
-          <div class="custom-marker" style="background-color: ${marker.color}; width: 20px; height: 20px; border-radius: 50%; border: 2px solid white; cursor: pointer;"></div>
-        </gmp-advanced-marker>`
-        )
-        .join("");
-
+      // NOTE: we no longer render <gmp-advanced-marker> for each custom marker here.
+      // keep only loader and place-picker + center/search markers + view toggle
       containerRef.current.innerHTML = `
         <gmpx-api-loader key="${apiKey}" solution-channel="GMP_GE_mapsandplacesautocomplete_v2"></gmpx-api-loader>
         <div class="map-controls">
@@ -104,9 +94,11 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           </button>
         </div>
         <gmp-map center="${center}" zoom="${zoom}" map-id="${mapId}">
+          <div slot="control-block-start-inline-start" class="place-picker-container">
+            <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
+          </div>
           <gmp-advanced-marker id="center-marker"></gmp-advanced-marker>
           <gmp-advanced-marker id="search-marker"></gmp-advanced-marker>
-          ${customMarkersHTML}
         </gmp-map>
       `;
 
@@ -120,8 +112,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const searchMarker = containerRef.current.querySelector(
         "#search-marker"
       ) as any;
+      const placePicker = containerRef.current.querySelector(
+        "gmpx-place-picker"
+      ) as any;
 
-      if (!map || !centerMarker || !searchMarker || !window.google) return;
+      if (!map || !centerMarker || !searchMarker || !placePicker || !window.google)
+        return;
 
       const infowindow = new window.google.maps.InfoWindow();
 
@@ -162,10 +158,26 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         });
       }
 
-      // Get Street View panorama
+      // Street View panorama
       const panorama = map.innerMap.getStreetView();
 
-      // Helper function to show InfoWindow that works in both map and street view
+      // Helper: severity color
+      function getSeverityColor(severity: string): string {
+        switch (severity.toLowerCase()) {
+          case "critical":
+            return "#FF0000";
+          case "high":
+            return "#FF4500";
+          case "medium":
+            return "#FFA500";
+          case "low":
+            return "#32CD32";
+          default:
+            return "#666";
+        }
+      }
+
+      // Helper to open info window for a marker and its data
       const showInfo = (marker: any, data: any) => {
         const content = `
           <div class="marker-tooltip">
@@ -205,30 +217,26 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             </div>
           </div>
         `;
-
+        // Auto-detect map or panorama because marker.getMap() returns that
         infowindow.setContent(content);
-        infowindow.open(marker.getMap(), marker); // automatically detects map or panorama
+        try {
+          infowindow.open(marker.getMap(), marker);
+        } catch (e) {
+          // fallback: open on map
+          infowindow.open(map.innerMap, marker);
+        }
       };
 
-      // Helper function to get severity color
-      function getSeverityColor(severity: string): string {
-        switch (severity.toLowerCase()) {
-          case "critical":
-            return "#FF0000";
-          case "high":
-            return "#FF4500";
-          case "medium":
-            return "#FFA500";
-          case "low":
-            return "#32CD32";
-          default:
-            return "#666";
-        }
-      }
+      // Make navigateToLocation available for the inline button in the InfoWindow
+      (window as any).navigateToLocation = (locationId: string) => {
+        console.log("Navigating to location:", locationId);
+        navigate(`/location/${locationId}`);
+      };
 
-      // Add custom markers to both Map and Street View
+      // For each custom marker we create a single google.maps.Marker and then
+      // move .setMap(...) between the map and the panorama when Street View opens.
       customMarkers.forEach((markerData) => {
-        // Create SVG icon for the marker
+        // Create SVG icon
         const svg = `
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
             <circle cx="16" cy="16" r="10" fill="${markerData.color}" stroke="white" stroke-width="2"/>
@@ -238,7 +246,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           svg
         )}`;
 
-        const markerOptions = {
+        // Shared marker (one instance only)
+        const sharedMarker = new window.google.maps.Marker({
           position: markerData.position,
           title: markerData.title,
           icon: {
@@ -246,101 +255,68 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
             scaledSize: new window.google.maps.Size(28, 28),
             anchor: new window.google.maps.Point(14, 14),
           },
-        };
-
-        // Create marker for regular map view
-        const mapMarker = new window.google.maps.Marker({
-          ...markerOptions,
-          map: map.innerMap,
+          map: map.innerMap, // default: add to map
+          clickable: true,
         });
 
-        // Create marker for street view
-        const panoMarker = new window.google.maps.Marker({
-          ...markerOptions,
-          map: panorama,
-        });
+        // Click opens same info window regardless of parent (map / panorama)
+        sharedMarker.addListener("click", () => showInfo(sharedMarker, markerData));
 
-        // Set up navigation function
-        (window as any).navigateToLocation = (locationId: string) => {
-          console.log("Navigating to location:", locationId);
-          navigate(`/location/${locationId}`);
+        // When panorama visibility changes, move the marker into the panorama or back to the map.
+        const updateMarkerParent = () => {
+          try {
+            const svVisible =
+              typeof panorama.getVisible === "function"
+                ? panorama.getVisible()
+                : !!(panorama && (panorama as any).visible);
+            if (svVisible) {
+              sharedMarker.setMap(panorama);
+            } else {
+              sharedMarker.setMap(map.innerMap);
+            }
+          } catch (err) {
+            // if anything fails, put it back on the map
+            sharedMarker.setMap(map.innerMap);
+            console.error("Error updating marker parent:", err);
+          }
         };
 
-        // Add click listeners for both markers
-        mapMarker.addListener("click", () => showInfo(mapMarker, markerData));
-        panoMarker.addListener("click", () => showInfo(panoMarker, markerData));
+        // Ensure update initially and whenever visibility changes
+        updateMarkerParent();
+        panorama.addListener("visible_changed", updateMarkerParent);
       });
 
-      // Add click listeners to custom markers
-      customMarkers.forEach((markerData) => {
-        const markerElement = containerRef.current?.querySelector(
-          `#${markerData.id}`
-        ) as any;
-        if (markerElement) {
-          markerElement.addEventListener("click", () => {
-            // Create a global function for navigation
-            (window as any).navigateToLocation = (locationId: string) => {
-              console.log("Navigating to location:", locationId);
-              navigate(`/location/${locationId}`);
-            };
+      // Place picker behavior
+      placePicker.addEventListener("gmpx-placechange", () => {
+        const place = placePicker.value;
 
-            const content = `
-              <div class="marker-tooltip">
-                <h3 style="margin: 0 0 10px 0; color: #333;">${
-                  markerData.title
-                }</h3>
-                <p style="margin: 0 0 8px 0; color: #666;">${
-                  markerData.description
-                }</p>
-                <div class="marker-details">
-                  <p><strong>Type:</strong> ${markerData.details.type}</p>
-                  <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(
-                    markerData.details.severity
-                  )}">${markerData.details.severity}</span></p>
-                  <p><strong>Reported By:</strong> ${
-                    markerData.details.reportedBy
-                  }</p>
-                  <p><strong>Timestamp:</strong> ${
-                    markerData.details.timestamp
-                  }</p>
-                </div>
-                <div style="margin-top: 15px; text-align: center;">
-                  <button 
-                    onclick="window.navigateToLocation('${markerData.id}')"
-                    style="
-                      background: #007bff; 
-                      color: white; 
-                      border: none; 
-                      padding: 8px 16px; 
-                      border-radius: 4px; 
-                      cursor: pointer;
-                      font-size: 14px;
-                      font-weight: 600;
-                      transition: background-color 0.2s;
-                    "
-                    onmouseover="this.style.backgroundColor='#0056b3'"
-                    onmouseout="this.style.backgroundColor='#007bff'"
-                  >
-                    ${
-                      markerData.id === "marker3"
-                        ? "➕ Add Suggestion"
-                        : "💬 View Discussion"
-                    }
-                  </button>
-                </div>
-              </div>
-            `;
-
-            infowindow.setContent(content);
-            infowindow.open(map.innerMap, markerElement);
-          });
+        if (!place.location) {
+          window.alert("No details available for input: '" + place.name + "'");
+          infowindow.close();
+          // Hide the search marker but keep the center marker
+          searchMarker.position = null;
+          return;
         }
+
+        if (place.viewport) {
+          map.innerMap.fitBounds(place.viewport);
+        } else {
+          map.center = place.location;
+          map.zoom = 17;
+        }
+
+        // Show the search result marker (this is the gmp-advanced-marker element)
+        searchMarker.position = place.location;
+        infowindow.setContent(
+          `<strong>${place.displayName}</strong><br>
+           <span>${place.formattedAddress}</span>`
+        );
+        infowindow.open(map.innerMap, searchMarker);
       });
     };
 
-    // Initialize when the component mounts
     init();
-  }, [apiKey, center, zoom, mapId]);
+  }, [apiKey, center, zoom, mapId, navigate]);
 
   return <div className="google-map-container" ref={containerRef}></div>;
 };
