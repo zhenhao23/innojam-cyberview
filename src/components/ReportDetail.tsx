@@ -27,12 +27,74 @@ interface ReportData {
   tags: string[];
 }
 
+// Augment Window with the difyChatbotConfig type locally
+type DifyChatbotConfig = {
+  token: string;
+  baseUrl: string;
+  inputs?: Record<string, unknown>;
+  systemVariables?: Record<string, unknown>;
+  userVariables?: Record<string, unknown>;
+};
+
+declare global {
+  interface Window { difyChatbotConfig?: DifyChatbotConfig }
+}
+
 const ReportDetail = () => {
   const { reportId } = useParams<{ reportId: string }>();
   const navigate = useNavigate();
   const [isGenerating, setIsGenerating] = useState(true);
   const [generatedContent, setGeneratedContent] = useState<string>("");
   const [progress, setProgress] = useState(0);
+
+  // Mount-only Dify Chatbot embed (scoped to this page)
+  useEffect(() => {
+    const token = '6hORwNNi1U5tpCkz';
+    const baseUrl = 'https://7qb3nlxs-80.asse.devtunnels.ms/';
+
+    // Set global config expected by the embed script
+    try {
+      window.difyChatbotConfig = {
+        token,
+        baseUrl,
+        inputs: {},
+        systemVariables: {},
+        userVariables: {},
+      };
+    } catch { /* no-op */ }
+
+    // Inject the embed script if not already present
+    const existing = document.getElementById(token) as HTMLScriptElement | null;
+    const script = existing ?? document.createElement('script');
+    if (!existing) {
+      script.src = baseUrl.replace(/\/$/, '') + '/embed.min.js';
+      script.id = token;
+      script.defer = true;
+      document.body.appendChild(script);
+    }
+
+    // Inject style overrides for the chatbot bubble/window
+    const style = document.createElement('style');
+    style.setAttribute('data-dify-style', token);
+    style.textContent = `
+      #dify-chatbot-bubble-button { background-color: #1C64F2 !important; }
+      #dify-chatbot-bubble-window { width: 24rem !important; height: 40rem !important; }
+    `;
+    document.head.appendChild(style);
+
+    // Cleanup on unmount so the chatbot is only active on this page
+    return () => {
+      try { delete window.difyChatbotConfig; } catch { /* no-op */ }
+      // Remove the script we added (only if we added it)
+      if (!existing && script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
+      // Remove our style overrides
+      document.querySelectorAll(`style[data-dify-style="${token}"]`).forEach((el) => {
+        el.parentNode?.removeChild(el);
+      });
+    };
+  }, []);
 
   // Mock business report data (same as in Report component)
 const reportData: ReportData[] = [
