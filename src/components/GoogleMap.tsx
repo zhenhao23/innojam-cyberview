@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import "./GoogleMap.css";
 
 interface GoogleMapProps {
@@ -35,33 +36,35 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   mapId = "DEMO_MAP_ID",
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   // Hardcoded markers with different colors and mock data
   const customMarkers: CustomMarker[] = [
     {
       id: "marker1",
       position: { lat: 2.907339562947603, lng: 101.65639822584465 },
-      color: "#FF0000", // Red
-      title: "ABC Hotel - Security Breach",
-      description: "Unauthorized access to guest WiFi network detected",
+      color: "#28a745", // Green
+      title: "Empty Land - Site A",
+      description:
+        "Underutilized land with potential for community development",
       details: {
-        type: "Network Intrusion",
-        severity: "High",
-        reportedBy: "Hotel Security System",
-        timestamp: "2025-09-27 16:45:00",
+        type: "Community Development",
+        severity: "Opportunity",
+        reportedBy: "Community Planning Committee",
+        timestamp: "2025-09-27 10:30:00",
       },
     },
     {
       id: "marker2",
       position: { lat: 2.9108112262010852, lng: 101.65535752875653 },
-      color: "#FFA500", // Orange
-      title: "123 Center - Malware Alert",
-      description: "Suspicious file activity in building network",
+      color: "#17a2b8", // Blue
+      title: "Empty Land - Site B",
+      description: "Prime location for recreational facilities development",
       details: {
-        type: "Malware Detection",
-        severity: "Medium",
-        reportedBy: "Automated Security Scanner",
-        timestamp: "2025-09-27 15:22:00",
+        type: "Land Development",
+        severity: "High Priority",
+        reportedBy: "Residents Association",
+        timestamp: "2025-09-27 11:15:00",
       },
     },
   ];
@@ -126,6 +129,111 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         mapTypeId: window.google.maps.MapTypeId.HYBRID,
       });
 
+      // Get Street View panorama
+      const panorama = map.innerMap.getStreetView();
+
+      // Helper function to show InfoWindow that works in both map and street view
+      const showInfo = (marker: any, data: any) => {
+        const content = `
+          <div class="marker-tooltip">
+            <h3 style="margin: 0 0 10px 0; color: #333;">${data.title}</h3>
+            <p style="margin: 0 0 8px 0; color: #666;">${data.description}</p>
+            <div class="marker-details">
+              <p><strong>Type:</strong> ${data.details.type}</p>
+              <p><strong>Severity:</strong> <span style="color: ${getSeverityColor(
+                data.details.severity
+              )}">${data.details.severity}</span></p>
+              <p><strong>Reported By:</strong> ${data.details.reportedBy}</p>
+              <p><strong>Timestamp:</strong> ${data.details.timestamp}</p>
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+              <button 
+                onclick="window.navigateToLocation('${data.id}')"
+                style="
+                  background: #007bff; 
+                  color: white; 
+                  border: none; 
+                  padding: 8px 16px; 
+                  border-radius: 4px; 
+                  cursor: pointer;
+                  font-size: 14px;
+                  font-weight: 600;
+                  transition: background-color 0.2s;
+                "
+                onmouseover="this.style.backgroundColor='#0056b3'"
+                onmouseout="this.style.backgroundColor='#007bff'"
+              >
+                💬 View Discussion
+              </button>
+            </div>
+          </div>
+        `;
+
+        infowindow.setContent(content);
+        infowindow.open(marker.getMap(), marker); // automatically detects map or panorama
+      };
+
+      // Helper function to get severity color
+      function getSeverityColor(severity: string): string {
+        switch (severity.toLowerCase()) {
+          case "critical":
+            return "#FF0000";
+          case "high":
+            return "#FF4500";
+          case "medium":
+            return "#FFA500";
+          case "low":
+            return "#32CD32";
+          default:
+            return "#666";
+        }
+      }
+
+      // Add custom markers to both Map and Street View
+      customMarkers.forEach((markerData) => {
+        // Create SVG icon for the marker
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
+            <circle cx="16" cy="16" r="10" fill="${markerData.color}" stroke="white" stroke-width="2"/>
+          </svg>
+        `;
+        const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+          svg
+        )}`;
+
+        const markerOptions = {
+          position: markerData.position,
+          title: markerData.title,
+          icon: {
+            url: iconUrl,
+            scaledSize: new window.google.maps.Size(28, 28),
+            anchor: new window.google.maps.Point(14, 14),
+          },
+        };
+
+        // Create marker for regular map view
+        const mapMarker = new window.google.maps.Marker({
+          ...markerOptions,
+          map: map.innerMap,
+        });
+
+        // Create marker for street view
+        const panoMarker = new window.google.maps.Marker({
+          ...markerOptions,
+          map: panorama,
+        });
+
+        // Set up navigation function
+        (window as any).navigateToLocation = (locationId: string) => {
+          console.log("Navigating to location:", locationId);
+          navigate(`/location/${locationId}`);
+        };
+
+        // Add click listeners for both markers
+        mapMarker.addListener("click", () => showInfo(mapMarker, markerData));
+        panoMarker.addListener("click", () => showInfo(panoMarker, markerData));
+      });
+
       // Add click listeners to custom markers
       customMarkers.forEach((markerData) => {
         const markerElement = containerRef.current?.querySelector(
@@ -133,6 +241,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         ) as any;
         if (markerElement) {
           markerElement.addEventListener("click", () => {
+            // Create a global function for navigation
+            (window as any).navigateToLocation = (locationId: string) => {
+              console.log("Navigating to location:", locationId);
+              navigate(`/location/${locationId}`);
+            };
+
             const content = `
               <div class="marker-tooltip">
                 <h3 style="margin: 0 0 10px 0; color: #333;">${
@@ -153,6 +267,26 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
                     markerData.details.timestamp
                   }</p>
                 </div>
+                <div style="margin-top: 15px; text-align: center;">
+                  <button 
+                    onclick="window.navigateToLocation('${markerData.id}')"
+                    style="
+                      background: #007bff; 
+                      color: white; 
+                      border: none; 
+                      padding: 8px 16px; 
+                      border-radius: 4px; 
+                      cursor: pointer;
+                      font-size: 14px;
+                      font-weight: 600;
+                      transition: background-color 0.2s;
+                    "
+                    onmouseover="this.style.backgroundColor='#0056b3'"
+                    onmouseout="this.style.backgroundColor='#007bff'"
+                  >
+                    💬 View Discussion
+                  </button>
+                </div>
               </div>
             `;
 
@@ -161,22 +295,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           });
         }
       });
-
-      // Helper function to get severity color
-      function getSeverityColor(severity: string): string {
-        switch (severity.toLowerCase()) {
-          case "critical":
-            return "#FF0000";
-          case "high":
-            return "#FF4500";
-          case "medium":
-            return "#FFA500";
-          case "low":
-            return "#32CD32";
-          default:
-            return "#666";
-        }
-      }
 
       placePicker.addEventListener("gmpx-placechange", () => {
         const place = placePicker.value;
