@@ -5,7 +5,10 @@ import LocationRouter from "./components/LocationRouter";
 import SuggestionSummary from "./components/SuggestionSummary";
 import Dify from "./components/Dify";
 import { ChatProvider } from "./contexts/ChatContext";
-import DifyBusiness from "./components/DifyBusiness";
+// import DifyBusiness from "./components/DifyBusiness";
+import Login from "./components/Login";
+
+
 
 function App() {
   // Get API key from environment variables
@@ -75,7 +78,8 @@ function App() {
             <Route path="/suggestion-summary" element={<SuggestionSummary />} />
             <Route path="/location/:locationId" element={<LocationRouter />} />
             <Route path="/dify" element={<Dify />} />
-            <Route path="/business" element={<DifyBusiness />} />
+            {/* <Route path="/business" element={<DifyBusiness />} /> */}
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </Router>
