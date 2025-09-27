@@ -291,7 +291,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Community Garden & Green Space",
         upvotes: 450,
         isUpvoted: true,
-        image: "/communitygarden.png",
+        image: "/public/community_garden.pjpg",
         comments: [
           {
             id: "comment-1-1",
@@ -314,7 +314,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Open Air Fitness Park",
         upvotes: 380,
         isUpvoted: false,
-        image: "/fitnesspark.png",
+        image: "/public/fitness_park.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -345,7 +345,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Kids’ Adventure Playground",
         upvotes: 600,
         isUpvoted: true,
-        image: "/playground.png",
+        image: "/public/playground.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -368,7 +368,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Urban Sports Hub",
         upvotes: 400,
         isUpvoted: false,
-        image: "/sportshub.png",
+        image: "/public/sportshub.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -399,7 +399,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Community Fitness Center",
         upvotes: 200,
         isUpvoted: true,
-        image: "/fitnesscenter.png",
+        image: "/public/fitness_center.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -422,7 +422,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Community Garden",
         upvotes: 100,
         isUpvoted: false,
-        image: "/communitygarden.png",
+        image: "/public/community_garden.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -451,9 +451,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Waterfront Jogging Path",
-        upvotes: 50,
+        upvotes: 500,
         isUpvoted: true,
-        image: "/joggingpath.png",
+        image: "/public/waterfront_jogging_path.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -474,9 +474,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-2",
         title: "Outdoor Cafes & Benches",
-        upvotes: 35,
+        upvotes: 350,
         isUpvoted: false,
-        image: "/cafebenches.png",
+        image: "/public/benches.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -505,9 +505,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Organize Equestrian Competitions",
-        upvotes: 40,
+        upvotes: 400,
         isUpvoted: true,
-        image: "/equestrian.png",
+        image: "/public/equestrian.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -525,29 +525,6 @@ const locationDataMap: { [key: string]: LocationData } = {
           },
         ],
       },
-      {
-        id: "suggestion-2",
-        title: "Weekend Riding Lessons",
-        upvotes: 30,
-        isUpvoted: false,
-        image: "/ridinglessons.png",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "ParentMom",
-            text: "My kids would love riding lessons! Very educational and fun.",
-            timestamp: "1 hour ago",
-            avatar: "👧🐴",
-          },
-          {
-            id: "comment-2-2",
-            author: "EquestrianFan",
-            text: "Lessons bring more people into the sport. Excellent idea!",
-            timestamp: "45 minutes ago",
-            avatar: "🏇",
-          },
-        ],
-      },
     ],
   },
   marker14: {
@@ -556,54 +533,7 @@ const locationDataMap: { [key: string]: LocationData } = {
     address: "📍 Putrajaya",
     description:
       "The Putrajaya Balancing Reservoir is a key water management facility designed to regulate water levels and prevent flooding in the surrounding areas. It also provides recreational opportunities for the public, including jogging paths, fishing spots, and scenic views, making it an important community and infrastructure asset.",
-    suggestions: [
-      {
-        id: "suggestion-1",
-        title: "Scenic Jogging & Cycling Trails",
-        upvotes: 55,
-        isUpvoted: true,
-        image: "/trail.png",
-        comments: [
-          {
-            id: "comment-1-1",
-            author: "JoggerGirl",
-            text: "A perfect place for morning jogs and bike rides!",
-            timestamp: "2 hours ago",
-            avatar: "🚴‍♀️",
-          },
-          {
-            id: "comment-1-2",
-            author: "NatureFan",
-            text: "Beautiful area to relax and enjoy nature.",
-            timestamp: "1 hour ago",
-            avatar: "🌿",
-          },
-        ],
-      },
-      {
-        id: "suggestion-2",
-        title: "Weekend Community Events",
-        upvotes: 42,
-        isUpvoted: false,
-        image: "/communityevent.png",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "EventPlanner",
-            text: "Organizing weekend events here would engage locals and promote community bonding.",
-            timestamp: "1 hour ago",
-            avatar: "🎉",
-          },
-          {
-            id: "comment-2-2",
-            author: "ResidentA",
-            text: "Great idea! A lovely place for fun outdoor activities.",
-            timestamp: "45 minutes ago",
-            avatar: "🏞️",
-          },
-        ],
-      },
-    ],
+    suggestions: [],
   },
   marker15: {
     id: "marker15",
@@ -615,9 +545,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Host Animation Workshops",
-        upvotes: 48,
+        upvotes: 408,
         isUpvoted: true,
-        image: "/animationworkshop.png",
+        image: "/public/animation_workshop.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -638,9 +568,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-2",
         title: "Open Studio Tours",
-        upvotes: 35,
+        upvotes: 305,
         isUpvoted: false,
-        image: "/studiotour.png",
+        image: "/public/monsta.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -670,9 +600,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-1",
         title: "Rooftop Garden & Lounge",
-        upvotes: 50,
+        upvotes: 300,
         isUpvoted: true,
-        image: "/rooftopgarden.png",
+        image: "/public/rooftop_garden.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -693,9 +623,9 @@ const locationDataMap: { [key: string]: LocationData } = {
       {
         id: "suggestion-2",
         title: "Fitness & Yoga Studio",
-        upvotes: 38,
+        upvotes: 108,
         isUpvoted: false,
-        image: "/fitnessyoga.png",
+        image: "/public/yoga.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -782,7 +712,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Community Lounge & Library",
         upvotes: 48,
         isUpvoted: true,
-        image: "/communitylounge.png",
+        image: "/public/community_lounge.jpg",
         comments: [
           {
             id: "comment-1-1",
@@ -805,7 +735,7 @@ const locationDataMap: { [key: string]: LocationData } = {
         title: "Kids’ Indoor Play Area",
         upvotes: 35,
         isUpvoted: false,
-        image: "/indoorplay.png",
+        image: "/public/indoor_play.jpg",
         comments: [
           {
             id: "comment-2-1",
@@ -825,7 +755,6 @@ const locationDataMap: { [key: string]: LocationData } = {
       },
     ],
   },
-
 
 };
 
