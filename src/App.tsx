@@ -8,6 +8,7 @@ import { ChatProvider } from "./contexts/ChatContext";
 import DifyBusiness from "./components/DifyBusiness";
 import Login from "./components/Login";
 import Report from "./components/Report";
+import Hots from "./components/Hots";
 
 
 
@@ -82,6 +83,7 @@ function App() {
             <Route path="/ai-insights" element={<DifyBusiness />} />
             <Route path="/reports" element={<Report />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/Hots" element={<Hots />} />
           </Routes>
         </div>
       </Router>
