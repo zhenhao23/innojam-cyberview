@@ -487,6 +487,7 @@
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.1);
   padding: 30px;
+  overflow: hidden;
 }
 
 .report-text {
@@ -501,4 +502,10 @@
   font-size: 15px;
   line-height: 1.8;
   color: #2c3e50;
+}
+
+/* Markdown Content Container */
+.markdown-content {
+  width: 100%;
+  max-width: none;
 }

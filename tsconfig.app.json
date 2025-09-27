@@ -25,4 +25,8 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src"]
+  ,
+  "exclude": [
+    "src/App_backup.tsx"
+  ]
 }

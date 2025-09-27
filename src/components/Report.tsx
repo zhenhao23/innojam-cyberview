@@ -20,7 +20,6 @@ const Report = () => {
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [reportStates, setReportStates] = useState<{[key: string]: 'idle' | 'generating' | 'ready'}>({});
-  const [countdowns, setCountdowns] = useState<{[key: string]: number}>({});
 
   // Mock business report data
 const reportData: ReportData[] = [
@@ -70,20 +69,10 @@ const reportData: ReportData[] = [
 
   const handleGenerateReport = (reportId: string) => {
     setReportStates(prev => ({ ...prev, [reportId]: 'generating' }));
-    setCountdowns(prev => ({ ...prev, [reportId]: 20 }));
-    
-    // Start countdown
-    const interval = setInterval(() => {
-      setCountdowns(prev => {
-        const newCount = (prev[reportId] || 20) - 1;
-        if (newCount <= 0) {
-          clearInterval(interval);
-          setReportStates(prevStates => ({ ...prevStates, [reportId]: 'ready' }));
-          return { ...prev, [reportId]: 0 };
-        }
-        return { ...prev, [reportId]: newCount };
-      });
-    }, 1000);
+    // Wait 45 seconds then mark as ready
+    setTimeout(() => {
+      setReportStates(prevStates => ({ ...prevStates, [reportId]: 'ready' }));
+    }, 45_000);
   };
 
   const handleViewReport = (reportId: string) => {
@@ -92,7 +81,6 @@ const reportData: ReportData[] = [
 
   const getButtonText = (reportId: string) => {
     const state = reportStates[reportId] || 'idle';
-    const countdown = countdowns[reportId] || 0;
     
     switch (state) {
       case 'generating':
