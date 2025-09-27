@@ -186,52 +186,7 @@ const locationDataMap: { [key: string]: LocationData } = {
     address: "📍 Cyberjaya",
     description: "Vacant plot suitable for community projects",
     suggestions: [
-      {
-        id: "suggestion-1",
-        title: "Community Garden & Green Space",
-        upvotes: 450,
-        isUpvoted: true,
-        image: "/public/community_garden.pjpg",
-        comments: [
-          {
-            id: "comment-1-1",
-            author: "GreenThumb",
-            text: "A community garden would bring residents together and promote healthy living.",
-            timestamp: "3 hours ago",
-            avatar: "🌱",
-          },
-          {
-            id: "comment-1-2",
-            author: "EcoWarrior",
-            text: "Great initiative for urban sustainability!",
-            timestamp: "2 hours ago",
-            avatar: "♻️",
-          },
-        ],
-      },
-      {
-        id: "suggestion-2",
-        title: "Open Air Fitness Park",
-        upvotes: 380,
-        isUpvoted: false,
-        image: "/public/fitness_park.jpg",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "FitnessFan",
-            text: "Would love a space to exercise outdoors. Makes fitness accessible to everyone!",
-            timestamp: "1 hour ago",
-            avatar: "🏋️",
-          },
-          {
-            id: "comment-2-2",
-            author: "JoggerGal",
-            text: "A great way to stay active and enjoy nature.",
-            timestamp: "45 minutes ago",
-            avatar: "🏃‍♀️",
-          },
-        ],
-      },
+     
     ],
   },
   marker9: {
@@ -240,52 +195,6 @@ const locationDataMap: { [key: string]: LocationData } = {
     address: "📍 Cyberjaya",
     description: "Open space for potential development",
     suggestions: [
-      {
-        id: "suggestion-1",
-        title: "Kids’ Adventure Playground",
-        upvotes: 600,
-        isUpvoted: true,
-        image: "/public/playground.jpg",
-        comments: [
-          {
-            id: "comment-1-1",
-            author: "ParentLife",
-            text: "Kids would love this! Safe and fun play area is much needed.",
-            timestamp: "2 hours ago",
-            avatar: "🛝",
-          },
-          {
-            id: "comment-1-2",
-            author: "NeighborhoodMom",
-            text: "Perfect space for children to explore and stay active.",
-            timestamp: "1 hour ago",
-            avatar: "👩‍👧",
-          },
-        ],
-      },
-      {
-        id: "suggestion-2",
-        title: "Urban Sports Hub",
-        upvotes: 400,
-        isUpvoted: false,
-        image: "/public/sportshub.jpg",
-        comments: [
-          {
-            id: "comment-2-1",
-            author: "TeenAthlete",
-            text: "Skateboarding, basketball, and more would keep teens engaged!",
-            timestamp: "1 hour ago",
-            avatar: "🏀",
-          },
-          {
-            id: "comment-2-2",
-            author: "YouthLeader",
-            text: "A hub like this encourages healthy lifestyles and teamwork.",
-            timestamp: "45 minutes ago",
-            avatar: "🤝",
-          },
-        ],
-      },
     ],
   },
   marker10: {
