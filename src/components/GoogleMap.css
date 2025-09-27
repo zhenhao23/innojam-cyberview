@@ -77,3 +77,111 @@ gmp-map {
 .marker-details strong {
   color: #333;
 }
+
+.google-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+/* Hamburger button */
+.hamburger-btn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1200;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: transform 120ms ease;
+}
+.hamburger-btn:active { transform: scale(0.98); }
+
+/* Hamburger menu panel */
+.hamburger-menu {
+  position: absolute;
+  top: 64px;
+  left: 12px;
+  z-index: 1199;
+  width: 250px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  overflow: hidden;
+  transform-origin: top left;
+  transform: scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 160ms cubic-bezier(.2,.9,.2,1), opacity 120ms ease;
+}
+
+/* When open */
+.hamburger-menu.open {
+  transform: scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Rows */
+.menu-row {
+  padding: 10px 12px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+}
+.menu-row:last-child { border-bottom: none; }
+.menu-row:hover { background: #f7f7f7; }
+
+/* Place picker inside menu should fill the width */
+.menu-address {
+  padding: 8px 10px;
+}
+.menu-address gmpx-place-picker,
+.menu-address .menu-place-picker {
+  width: 100%;
+  display: block;
+}
+
+/* If the place-picker injects an input, ensure it doesn't overflow */
+.menu-address input {
+  width: 100% !important;
+  box-sizing: border-box;
+}
+
+/* map controls (existing view toggle) - keep it visible but positioned top-right */
+.map-controls {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 1100;
+  display: flex;
+  gap: 8px;
+}
+.view-toggle-button {
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+}
+
+/* small responsive tweak */
+@media (max-width: 480px) {
+  .hamburger-menu { width: calc(100% - 24px); left: 12px; right: 12px; }
+  .map-controls { right: 8px; }
+}
