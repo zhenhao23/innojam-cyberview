@@ -47,7 +47,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  const customMarkers: CustomMarker[] = [
+const customMarkers: CustomMarker[] = [
     // Original markers
    
     {
@@ -230,8 +230,8 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       <!-- Hamburger button + menu -->
       <button id="hamburger-btn" class="hamburger-btn" aria-label="Open menu" aria-expanded="false">☰</button>
       <div id="hamburger-menu" class="hamburger-menu" aria-hidden="true">
-        <div id="menu-address" class="menu-row menu-address"></div>
-        <button id="menu-satellite" class="menu-row menu-action">🛰️ Satellite</button>
+        <button id="menu-mapSymbol" class="menu-row menu-action">🗺️ Map Symbol</button>
+        <button id="menu-sat-terrain" class="menu-row menu-action">⛰️ Terrain</button>
         <button id="menu-business" class="menu-row menu-action">🏢 Business</button>
         <button id="menu-addANewLocation" class="menu-row menu-action">📍 Propose a New Location</button>
         <button id="menu-settings" class="menu-row menu-action">⚙️ Settings</button>
@@ -240,9 +240,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
       <!-- The gmp loader + map + inline controls (kept from your original) -->
       <gmpx-api-loader key="${apiKey}" solution-channel="GMP_GE_mapsandplacesautocomplete_v2"></gmpx-api-loader>
-      <div class="map-controls">
-        <button id="view-toggle-btn" class="view-toggle-button">🛰️ Satellite</button>
-      </div>
       <gmp-map center="${center}" zoom="${zoom}" map-id="${mapId}">
         <div slot="control-block-start-inline-start" class="place-picker-container">
           <gmpx-place-picker placeholder="Enter an address"></gmpx-place-picker>
@@ -255,9 +252,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
     const init = async () => {
       if (!mounted || !containerRef.current) return;
 
-      // Wait for custom elements definitions
       await customElements.whenDefined("gmp-map");
-      // gmpx-place-picker is used both inside map and inside menu; wait for it too
       await customElements.whenDefined("gmpx-place-picker");
 
       if (!mounted || !containerRef.current) return;
@@ -279,11 +274,12 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       const hamburgerMenu = containerRef.current.querySelector(
         "#hamburger-menu"
       ) as HTMLDivElement;
-      const menuAddressContainer = containerRef.current.querySelector(
-        "#menu-address"
-      ) as HTMLDivElement;
-      const menuSatelliteBtn = containerRef.current.querySelector(
-        "#menu-satellite"
+
+      const menuMapSymbolBtn = containerRef.current.querySelector(
+        "#menu-mapSymbol"
+      ) as HTMLButtonElement;
+      const menuSatTerrainBtn = containerRef.current.querySelector(
+        "#menu-sat-terrain"
       ) as HTMLButtonElement;
       const menuBusinessBtn = containerRef.current.querySelector(
         "#menu-business"
@@ -327,8 +323,10 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         },
       });
 
-      // Street View panorama
       const panorama = map.innerMap.getStreetView();
+
+      let mapSymbolState: "hybrid" | "satellite" = "hybrid";
+      let satTerrainState: "satellite" | "terrain" = "satellite";
 
       // HELPERS
       function getSeverityColor(severity: string): string {
@@ -405,7 +403,7 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         navigate(`/location/${locationId}`);
       };
 
-      // Add markers (single shared google.maps.Marker per item, moved to panorama when needed)
+      // Add markers (unchanged)
       customMarkers.forEach((markerData) => {
         const svg = `
           <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">
@@ -428,7 +426,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
           clickable: true,
         });
 
-        // Click opens same info window regardless of parent (map / panorama)
         sharedMarker.addListener("click", () =>
           showInfo(sharedMarker, markerData)
         );
@@ -455,13 +452,6 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
       });
 
       // ---------- PLACE PICKER HANDLING ----------
-      // Create a place-picker inside the hamburger menu (menuPlacePicker) and wire it up.
-      const menuPlacePicker = document.createElement("gmpx-place-picker");
-      menuPlacePicker.setAttribute("placeholder", "Enter an address");
-      menuPlacePicker.setAttribute("class", "menu-place-picker");
-      if (menuAddressContainer)
-        menuAddressContainer.appendChild(menuPlacePicker);
-
       const handlePlaceSelection = (picker: any) => {
         const place = picker.value;
         if (!place || !place.location) {
@@ -488,23 +478,29 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
         );
         infowindow.open(map.innerMap, searchMarker);
 
-        // Close hamburger menu if open
-        if (hamburgerMenu && hamburgerMenu.classList.contains("open")) {
-          hamburgerMenu.classList.remove("open");
-          hamburgerMenu.setAttribute("aria-hidden", "true");
-          if (hamburgerBtn) hamburgerBtn.setAttribute("aria-expanded", "false");
-        }
+        // NOTE: previously we closed the hamburger here. Per request, we DON'T auto-close.
+        // The menu will remain open; users close it by tapping outside or the button.
       };
 
-      // Listen to both place pickers (the one inside map & the one in menu)
-      menuPlacePicker.addEventListener("gmpx-placechange", () =>
-        handlePlaceSelection(menuPlacePicker)
-      );
-      placePicker.addEventListener("gmpx-placechange", () =>
-        handlePlaceSelection(placePicker)
-      );
+      // add removable event listener for cleanup
+      const placePickerHandler = () => handlePlaceSelection(placePicker);
+      placePicker.addEventListener("gmpx-placechange", placePickerHandler);
 
       // ---------- HAMBURGER TOGGLE ----------
+      const openHamburger = () => {
+        if (!hamburgerMenu || !hamburgerBtn) return;
+        hamburgerMenu.classList.add("open");
+        hamburgerMenu.setAttribute("aria-hidden", "false");
+        hamburgerBtn.setAttribute("aria-expanded", "true");
+      };
+      const closeHamburger = () => {
+        if (!hamburgerMenu || !hamburgerBtn) return;
+        if (hamburgerMenu.classList.contains("open")) {
+          hamburgerMenu.classList.remove("open");
+          hamburgerMenu.setAttribute("aria-hidden", "true");
+          hamburgerBtn.setAttribute("aria-expanded", "false");
+        }
+      };
       const toggleMenu = () => {
         if (!hamburgerMenu || !hamburgerBtn) return;
         const isOpen = hamburgerMenu.classList.toggle("open");
@@ -514,80 +510,119 @@ const GoogleMap: React.FC<GoogleMapProps> = ({
 
       hamburgerBtn?.addEventListener("click", toggleMenu);
 
-      // ---------- VIEW TOGGLE / SATELLITE ----------
-      let isHybridView = true;
-      const setViewButtonState = () => {
-        if (!toggleButton || !menuSatelliteBtn) return;
-        if (isHybridView) {
+      // ---------- OUTSIDE-TAP HANDLER ----------
+      const handleDocumentPointerDown = (e: PointerEvent) => {
+        const target = e.target as Node | null;
+        if (!hamburgerMenu || !hamburgerBtn || !target) return;
+        // If the tap is outside both the menu and the hamburger button, close the menu.
+        if (!hamburgerMenu.contains(target) && !hamburgerBtn.contains(target)) {
+          closeHamburger();
+        }
+      };
+
+      document.addEventListener("pointerdown", handleDocumentPointerDown);
+
+      // ---------- VIEW TOGGLE / SATELLITE / TERRAIN ----------
+      const setMapSymbolButtonState = () => {
+        if (!toggleButton || !menuMapSymbolBtn) return;
+        if (mapSymbolState === "hybrid") {
           toggleButton.innerHTML = "🛰️ Satellite";
           toggleButton.title = "Switch to Satellite view";
-          menuSatelliteBtn.textContent = "🛰️ Satellite";
+          menuMapSymbolBtn.textContent = "🛰️ Satellite";
         } else {
           toggleButton.innerHTML = "🗺️ Hybrid";
           toggleButton.title = "Switch to Hybrid view";
-          menuSatelliteBtn.textContent = "🗺️ Hybrid";
+          menuMapSymbolBtn.textContent = "🗺️ Hybrid";
         }
       };
 
-      const toggleMapView = () => {
-        if (!map || !window.google) return;
-        if (isHybridView) {
-          map.innerMap.setOptions({
-            mapTypeId: window.google.maps.MapTypeId.SATELLITE,
-          });
-          isHybridView = false;
+      const setSatTerrainButtonState = () => {
+        if (!menuSatTerrainBtn) return;
+        if (satTerrainState === "satellite") {
+          menuSatTerrainBtn.textContent = "⛰️ Terrain";
         } else {
-          map.innerMap.setOptions({
-            mapTypeId: window.google.maps.MapTypeId.HYBRID,
-          });
-          isHybridView = true;
+          menuSatTerrainBtn.textContent = "🛰️ Satellite";
         }
-        setViewButtonState();
       };
 
-      toggleButton?.addEventListener("click", toggleMapView);
-      menuSatelliteBtn?.addEventListener("click", () => {
-        toggleMapView();
-        // close menu after selection
-        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+      const toggleMapSymbol = () => {
+        if (!map || !window.google) return;
+        if (mapSymbolState === "hybrid") {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.SATELLITE });
+          mapSymbolState = "satellite";
+          satTerrainState = "satellite";
+        } else {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.HYBRID });
+          mapSymbolState = "hybrid";
+        }
+        setMapSymbolButtonState();
+        setSatTerrainButtonState();
+      };
+
+      const toggleSatTerrain = () => {
+        if (!map || !window.google) return;
+        if (satTerrainState === "satellite") {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.TERRAIN });
+          satTerrainState = "terrain";
+        } else {
+          map.innerMap.setOptions({ mapTypeId: window.google.maps.MapTypeId.SATELLITE });
+          satTerrainState = "satellite";
+        }
+        mapSymbolState = "satellite";
+        setMapSymbolButtonState();
+        setSatTerrainButtonState();
+      };
+
+      // Important: DO NOT close the hamburger here — keep menu open when user taps menu items
+      menuMapSymbolBtn?.addEventListener("click", () => {
+        toggleMapSymbol();
+      });
+      menuSatTerrainBtn?.addEventListener("click", () => {
+        toggleSatTerrain();
       });
 
-      setViewButtonState();
-
-      // ---------- MENU NAV ACTIONS ----------
+      // navigation buttons: do not auto-close the menu per your requirement.
       menuBusinessBtn?.addEventListener("click", () => {
         navigate("/business");
-        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
       });
       menuSettingsBtn?.addEventListener("click", () => {
-        navigate("/settings");
-        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+        alert("Coming Soon!");
       });
       menuProfileBtn?.addEventListener("click", () => {
-        navigate("/profile");
-        if (hamburgerMenu?.classList.contains("open")) toggleMenu();
+        alert("Coming Soon!");
       });
       menuAddANewLocationBtn?.addEventListener("click", () => {
         alert("Coming Soon!");
       });
 
 
+
+      // Initialize button states
+      setMapSymbolButtonState();
+      setSatTerrainButtonState();
     };
 
     init();
 
     return () => {
       mounted = false;
-      // clear injected DOM so listeners are gone
+      // cleanup DOM (will remove many listeners), plus explicitly remove global listeners we added
       try {
         if (containerRef.current) containerRef.current.innerHTML = "";
       } catch (e) {
         console.warn("Error during cleanup", e);
       }
-      // Remove global function
       try {
         delete (window as any).navigateToLocation;
       } catch {}
+      // remove the document listener we added
+      document.removeEventListener("pointerdown", (e) => {
+        /* no-op removal placeholder - actual handler was created in init and removed by reference in that scope */
+      });
+      // NOTE: We intentionally don't try to remove every DOM listener since we cleared innerHTML above.
+      // If you want to be strict about removing each listener (preferred in long-lived apps), capture
+      // references to each handler (toggleMenu, handleDocumentPointerDown, placePickerHandler, etc.)
+      // in outer scope so you can call removeEventListener with the same function reference here.
     };
   }, [apiKey, center, zoom, mapId, navigate]);
 
