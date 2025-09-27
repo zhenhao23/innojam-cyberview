@@ -6,7 +6,7 @@ interface ReportData {
   id: string;
   title: string;
   type: "development" | "infrastructure" | "community" | "business";
-  status: "pending" | "in-progress" | "completed" | "rejected";
+  status: "pending" | "in-progress" | "completed" | "rejected"| "ready to generate";
   priority: "low" | "medium" | "high" | "critical";
   location: string;
   submittedBy: string;
@@ -19,22 +19,24 @@ const Report = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<string>("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [reportStates, setReportStates] = useState<{[key: string]: 'idle' | 'generating' | 'ready'}>({});
+  const [countdowns, setCountdowns] = useState<{[key: string]: number}>({});
 
   // Mock business report data
-  const reportData: ReportData[] = [
+const reportData: ReportData[] = [
     {
-      id: "BRP-001",
-      title: "Chagee Bubble Tea Store Opening",
-      type: "business",
-      status: "in-progress",
-      priority: "high",
-      location: "DPULZE Shopping Centre, Cyberjaya",
-      submittedBy: "DPULZE Management & Chagee Malaysia",
-      submittedDate: "2025-09-27",
-      description: "Establishment of a new Chagee bubble tea outlet in DPULZE Shopping Centre. This popular Taiwanese bubble tea brand will bring authentic flavors and high-quality beverages to Cyberjaya residents and visitors. The store will feature modern interior design, extensive menu options, and will contribute to the mall's dining and beverage ecosystem. Expected to create local employment opportunities and attract more foot traffic to the shopping center.",
-      tags: ["food-beverage", "retail", "franchise", "taiwanese", "bubble-tea", "chagee", "commercial"]
+        id: "BRP-001",
+        title: "New Chagee Store Planning in Cyberjaya",
+        type: "business",
+        status: "completed",
+        priority: "high",
+        location: "Cyberjaya",
+        submittedBy: "Chagee Malaysia",
+        submittedDate: "2025-09-27",
+        description: "Establishment of a new Chagee bubble tea outlet in Cyberjaya. This popular Taiwanese bubble tea brand will bring authentic flavors and high-quality beverages to Cyberjaya residents and visitors. The store will feature modern interior design, extensive menu options, and will contribute to the mall's dining and beverage ecosystem. Expected to create local employment opportunities and attract more foot traffic to the shopping center.",
+        tags: ["food-and-beverage", "retail", "franchise", "taiwanese", "bubble-tea", "chagee", "commercial"]
     }
-  ];
+];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -63,6 +65,55 @@ const Report = () => {
       case "community": return "👥";
       case "business": return "🏢";
       default: return "📄";
+    }
+  };
+
+  const handleGenerateReport = (reportId: string) => {
+    setReportStates(prev => ({ ...prev, [reportId]: 'generating' }));
+    setCountdowns(prev => ({ ...prev, [reportId]: 20 }));
+    
+    // Start countdown
+    const interval = setInterval(() => {
+      setCountdowns(prev => {
+        const newCount = (prev[reportId] || 20) - 1;
+        if (newCount <= 0) {
+          clearInterval(interval);
+          setReportStates(prevStates => ({ ...prevStates, [reportId]: 'ready' }));
+          return { ...prev, [reportId]: 0 };
+        }
+        return { ...prev, [reportId]: newCount };
+      });
+    }, 1000);
+  };
+
+  const handleViewReport = (reportId: string) => {
+    navigate(`/report/${reportId}`);
+  };
+
+  const getButtonText = (reportId: string) => {
+    const state = reportStates[reportId] || 'idle';
+    const countdown = countdowns[reportId] || 0;
+    
+    switch (state) {
+      case 'generating':
+        return `⏳ Generating...`;
+      case 'ready':
+        return '📄 View Report';
+      default:
+        return '🔄 Generate Report';
+    }
+  };
+
+  const getButtonHandler = (reportId: string) => {
+    const state = reportStates[reportId] || 'idle';
+    
+    switch (state) {
+      case 'ready':
+        return () => handleViewReport(reportId);
+      case 'generating':
+        return undefined; // Disabled state
+      default:
+        return () => handleGenerateReport(reportId);
     }
   };
 
@@ -233,14 +284,12 @@ const Report = () => {
               </div>
 
               <div className="report-actions">
-                <button className="action-btn view-btn">
-                  👁️ View Details
-                </button>
-                <button className="action-btn edit-btn">
-                  ✏️ Edit
-                </button>
-                <button className="action-btn export-btn">
-                  📤 Export
+                <button 
+                  className={`action-btn ${reportStates[report.id] === 'generating' ? 'generating-btn' : reportStates[report.id] === 'ready' ? 'ready-btn' : 'view-btn'}`}
+                  onClick={getButtonHandler(report.id)}
+                  disabled={reportStates[report.id] === 'generating'}
+                >
+                  {getButtonText(report.id)}
                 </button>
               </div>
             </div>
